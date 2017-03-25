@@ -12,12 +12,12 @@ TARGET = kok
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        MainWindow.cpp \
-    recorder.cpp
+SOURCES += src/main.cpp \
+    src/MainWindow.cpp \
+    src/recorder.cpp
 
-HEADERS  += MainWindow.h \
-    recorder.h
+HEADERS  += src/MainWindow.h \
+    src/recorder.h
 
 FORMS += \
-    mainwindow.ui
+    src/mainwindow.ui
