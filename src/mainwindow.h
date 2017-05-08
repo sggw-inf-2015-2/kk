@@ -18,10 +18,9 @@ public:
 
 private slots:
     void proceed();
-	void printBytes(int bytes);
+	void showSize(qint64 bytes);
 
 private:
-    void openFile();
     Ui::MainWindow *ui;
     bool recordOnRun;
     Recorder recorder;

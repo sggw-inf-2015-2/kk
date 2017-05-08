@@ -2,29 +2,28 @@
 #define RECORDER_H
 
 #include <QAudioInput>
+#include <QFile>
 #include <QDebug>
-#include <QBuffer>
-#include <QObject>
+#include <exception>
+
+using std::exception;
 
 class Recorder : public QObject
 {
 	Q_OBJECT
-
     QAudioInput *audio;
-	QBuffer buffer;
+	QFile file;
 
     void setFormatSettings(QAudioFormat *format);
-    void openBuffer();
-    void closeBuffer();
+	void openFile();
+	void closeFile();
 public:
 	Recorder();
     ~Recorder();
     void Start();
     void Stop();
 signals:
-	void bytesSaved(int bytes);
-private slots:
-	void sendSavedBytes();
+	void bytesSaved(qint64 bytes);
 };
 
 #endif // RECORDER_H
