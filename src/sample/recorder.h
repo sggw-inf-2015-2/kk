@@ -15,7 +15,7 @@ class Recorder : public QObject
 
     void printAvailableDevices();
     void setFormatSettings(QAudioFormat *format);
-	void openFile();
+	void openFile(const QString &fileName);
 	void closeFile();
 public:
 	Recorder();
