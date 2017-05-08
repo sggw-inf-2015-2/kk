@@ -4,20 +4,22 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia
+QT  += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = kok
+TARGET = sample
 TEMPLATE = app
 
+SOURCES += main.cpp\
+    recorder.cpp \
+    mainwindow.cpp
 
-SOURCES += src/main.cpp \
-    src/MainWindow.cpp \
-    src/recorder.cpp
-
-HEADERS  += src/MainWindow.h \
-    src/recorder.h
+HEADERS  += \
+    recorder.h \
+    mainwindow.h
 
 FORMS += \
-    src/mainwindow.ui
+    mainwindow.ui
+
+CONFIG += c++11
