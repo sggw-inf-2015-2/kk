@@ -4,20 +4,21 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia
+QT  += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = sample
 TEMPLATE = app
-
+CONFIG += console
 
 SOURCES += main.cpp\
-        MainWindow.cpp \
-    recorder.cpp
+    recorder.cpp \
+    mainwindow.cpp
 
-HEADERS  += MainWindow.h \
-    recorder.h
+HEADERS  += \
+    recorder.h \
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui

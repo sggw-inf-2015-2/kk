@@ -27,14 +27,14 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Dane w buforze:</string>
+         <string>Zapisane dane:</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="bytes">
         <property name="text">
-         <string>0 bajtów</string>
+         <string/>
         </property>
        </widget>
       </item>

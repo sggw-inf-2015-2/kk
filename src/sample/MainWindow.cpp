@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -8,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     recordOnRun = false;
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
-	connect(&recorder, SIGNAL(bytesSaved(int)), this, SLOT(printBytes(int)));
+	connect(&recorder, SIGNAL(bytesSaved(qint64)), this, SLOT(showSize(qint64)));
 }
 
 MainWindow::~MainWindow()
@@ -18,22 +19,30 @@ MainWindow::~MainWindow()
 
 void MainWindow::proceed()
 {
-    if (!recordOnRun)
-    {
-        recorder.Start();
-        recordOnRun = true;
-		ui->recordButton->setText(tr("Zatrzymaj"));
-    }
-    else
-    {
-        recorder.Stop();
-        recordOnRun = false;
-		ui->recordButton->setText(tr("Nagrywaj"));
-		ui->bytes->setText(tr("0 bajtów"));
+	try
+	{
+		if (!recordOnRun)
+		{
+			recorder.Start();
+			recordOnRun = true;
+			ui->recordButton->setText(tr("Zatrzymaj"));
+			ui->bytes->clear();
+		}
+		else
+		{
+			recorder.Stop();
+			recordOnRun = false;
+			ui->recordButton->setText(tr("Nagrywaj"));
+		}
+	}
+	catch (exception &e)
+	{
+		QMessageBox::critical(this, windowTitle(), e.what());
+		return;
 	}
 }
 
-void MainWindow::printBytes(int bytes)
+void MainWindow::showSize(qint64 size)
 {
-	ui->bytes->setText(QString::number(bytes) + " bajtów");
+	ui->bytes->setText(QString::number((long)size) + " bajtów");
 }
