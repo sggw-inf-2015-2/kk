@@ -4,7 +4,29 @@
 
 Recorder::Recorder()
 {
-	audio = nullptr;
+    QAudioFormat format;
+    setFormatSettings(&format);
+    QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
+    foreach(auto device, info.availableDevices(QAudio::AudioInput))
+    {
+        qDebug() << device.deviceName();
+    }
+
+    if (!info.isFormatSupported(format)) // jeśli określony w funkcji setFormatSettings format nie jest obsługiwany, używany jest domyślny
+    {
+        qDebug() << "Format not supported, trying to use the nearest.";
+        format = info.nearestFormat(format);
+    }
+    audio = new QAudioInput(format);
+    try
+    {
+        openFile();
+    }
+    catch (exception &)
+    {
+        throw;
+        return;
+    }
 }
 
 Recorder::~Recorder()
@@ -15,30 +37,8 @@ Recorder::~Recorder()
 
 void Recorder::Start()
 {
-    QAudioFormat format;
-    setFormatSettings(&format);
-    QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
-    foreach(auto device, info.availableDevices(QAudio::AudioInput))
-    {
-        qDebug() << device.deviceName();
-    }
-
-	if (!info.isFormatSupported(format)) // jeśli określony w funkcji setFormatSettings format nie jest obsługiwany, używany jest domyślny
-    {
-		qDebug() << "Format not supported, trying to use the nearest.";
-        format = info.nearestFormat(format);
-    }
-    audio = new QAudioInput(format);
-	try
-	{
-		openFile();
-	}
-	catch (exception &)
-	{
-		throw;
-		return;
-	}
 	audio->start(&file);
+    QTimer::singleShot(5000, this, SLOT(Stop()));
 }
 
 void Recorder::Stop()
@@ -47,8 +47,6 @@ void Recorder::Stop()
 
     audio->stop();
 	closeFile();
-    delete audio;
-	audio = nullptr;
 }
 
 void Recorder::setFormatSettings(QAudioFormat *format)
