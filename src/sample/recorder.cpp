@@ -1,13 +1,15 @@
 #include "recorder.h"
 #include <QDir>
 #include <QAudioFormat>
+#include <QTimer>
 #include <stdexcept>
 
 using std::logic_error;
 
 Recorder::Recorder()
 {
-	audio = nullptr;
+	initialiseRecorder();
+	setupTimer();
 }
 
 Recorder::~Recorder()
@@ -16,20 +18,41 @@ Recorder::~Recorder()
         delete audio;
 }
 
+void Recorder::initialiseRecorder()
+{
+	QAudioFormat format;
+	setFormatSettings(&format);
+	QAudioDeviceInfo device = QAudioDeviceInfo::defaultInputDevice();
+	if (!device.isFormatSupported(format)) // Jeśli określony w funkcji setFormatSettings format nie jest obsługiwany, używany jest domyślny
+	{
+		qDebug() << "Format not supported, trying to use the nearest.";
+		format = device.nearestFormat(format);
+	}
+	audio = new QAudioInput(format);
+}
+
+void Recorder::setupTimer()
+{
+	timer.setSingleShot(true);
+	timer.setInterval(5000);
+	connect(&timer, SIGNAL(timeout()), this, SLOT(Stop()));
+}
+
+void Recorder::setFormatSettings(QAudioFormat *format)
+{
+	format->setChannelCount(1);
+	format->setSampleRate(48000);
+	format->setCodec("audio/pcm");
+	format->setSampleSize(16);
+	format->setByteOrder(QAudioFormat::LittleEndian);
+	format->setSampleType(QAudioFormat::SignedInt);
+}
+
 void Recorder::Start()
 {
-    QAudioFormat format;
-    setFormatSettings(&format);
-    QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
-	if (!info.isFormatSupported(format)) // jeśli określony w funkcji setFormatSettings format nie jest obsługiwany, używany jest domyślny
-    {
-        qDebug() << "Format not supported, trying to use the nearest.";
-        format = info.nearestFormat(format);
-    }
-    audio = new QAudioInput(format);
 	try
 	{
-		openFile("audiodata");
+		openFile("audiodata.raw");
 	}
 	catch (exception &)
 	{
@@ -37,16 +60,47 @@ void Recorder::Start()
 		return;
 	}
 	audio->start(&file);
+
+	// Nagrywaj przez 5 sekund
+	timer.start();
+}
+
+void Recorder::openFile(const QString &fileName)
+{
+	// Sprawdzenie, czy w katalogu z aplikacją nie znajduje się folder o takiej samej nazwie
+	QDir testDir(fileName);
+	if (testDir.exists())
+	{
+		QString msg = QString("Nie udało się utworzyć pliku. Istnieje już katalog o tej samej nazwie (%1).").arg(fileName);
+		throw logic_error(msg.toStdString());
+		return;
+	}
+
+	QDir dir;
+	QString path = dir.absoluteFilePath(fileName);
+	file.setFileName(path);
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
+	{
+		QString msg = "Nie udało się otworzyć pliku. ";
+		msg.append(file.errorString());
+		throw logic_error(msg.toStdString());
+		return;
+	}
 }
 
 void Recorder::Stop()
 {
-	emit bytesSaved(file.size());
-
-    audio->stop();
+	timer.stop(); // Na wypadek, gdy użytkownik zatrzymał nagrywanie przed czasem
+	audio->stop();
 	closeFile();
-    delete audio;
-    audio = nullptr;
+
+	emit recordingStopped(file.size());
+}
+
+void Recorder::closeFile()
+{
+	file.close();
 }
 
 void Recorder::printAvailableDevices()
@@ -89,40 +143,4 @@ void Recorder::printAvailableDevices()
         qDebug() << "\n";
         ++i;
     }
-}
-
-void Recorder::setFormatSettings(QAudioFormat *format)
-{
-	format->setChannelCount(1);
-    format->setSampleRate(48000);
-    format->setCodec("audio/pcm");
-	format->setSampleSize(16);
-	format->setByteOrder(QAudioFormat::LittleEndian);
-	format->setSampleType(QAudioFormat::SignedInt);
-}
-
-void Recorder::openFile(const QString &fileName)
-{
-	// Sprawdzenie, czy w katalogu z aplikacją nie znajduje się folder o takiej samej nazwie
-	QDir testDir(fileName);
-	if (testDir.exists())
-	{
-		QString msg = QString("Nie udało się utworzyć pliku. Istnieje już katalog o tej samej nazwie (%1).").arg(fileName);
-		throw logic_error(msg.toStdString());
-	}
-
-	QDir dir;
-	QString path = dir.absoluteFilePath(fileName);
-    file.setFileName(path);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
-	{
-		QString msg = "Nie udało się otworzyć pliku. ";
-		msg.append(file.errorString());
-        throw logic_error(msg.toStdString());
-	}
-}
-void Recorder::closeFile()
-{
-	file.close();
 }

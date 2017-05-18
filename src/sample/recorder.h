@@ -4,6 +4,7 @@
 #include <QAudioInput>
 #include <QFile>
 #include <QDebug>
+#include <QTimer>
 #include <exception>
 using std::exception;
 
@@ -12,7 +13,10 @@ class Recorder : public QObject
 	Q_OBJECT
     QAudioInput *audio;
 	QFile file;
+	QTimer timer;
 
+	void initialiseRecorder();
+	void setupTimer();
     void printAvailableDevices();
     void setFormatSettings(QAudioFormat *format);
 	void openFile(const QString &fileName);
@@ -21,9 +25,10 @@ public:
 	Recorder();
     ~Recorder();
     void Start();
-    void Stop();
+public slots:
+	void Stop();
 signals:
-	void bytesSaved(qint64 bytes);
+	void recordingStopped(qint64 savedBytes);
 };
 
 #endif // RECORDER_H
