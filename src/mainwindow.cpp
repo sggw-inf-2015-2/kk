@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     recordOnRun = false;
-    connect(ui->recordButton, SIGNAL(clicked()), this, SLOT(proceed()));
-	connect(&recorder, SIGNAL(bytesSaved(qint64)), this, SLOT(showSize(qint64)));
+    connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
+	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
 }
 
 MainWindow::~MainWindow()
@@ -21,18 +21,16 @@ void MainWindow::proceed()
 {
 	try
 	{
-        if (!recordOnRun)
-        {
+		if (!recordOnRun)
+		{
 			recorder.Start();
 			recordOnRun = true;
-          //  ui->recordButton->setText(tr("Zatrzymaj"));
-            ui->bytes->clear();
+			ui->recordButton->setText(tr("Zatrzymaj"));
+			ui->bytes->clear();
 		}
 		else
-        {
-            //recorder.Stop();
-            recordOnRun = false;
-            //ui->recordButton->setText(tr("Nagrywaj"));
+		{
+			recorder.Stop();
 		}
 	}
 	catch (exception &e)
@@ -42,7 +40,9 @@ void MainWindow::proceed()
 	}
 }
 
-void MainWindow::showSize(qint64 size)
+void MainWindow::onRecordingStopped(qint64 size)
 {
-	ui->bytes->setText(QString::number((long)size) + " bajtów");
+	ui->bytes->setText(QString::number((long)size) + tr(" bajtów"));
+	ui->recordButton->setText(tr("Nagrywaj"));
+	recordOnRun = false;
 }

@@ -19,7 +19,7 @@ public:
 
 private slots:
     void proceed();
-	void showSize(qint64 bytes);
+	void onRecordingStopped(qint64 bytes);
 
 private:
     Ui::MainWindow *ui;

@@ -2,33 +2,35 @@
 #define RECORDER_H
 
 #include <QAudioInput>
-#include <QFile>
+#include "wavFile.h"
 #include <QDebug>
-#include <exception>
 #include <QTimer>
+#include <exception>
 
 using std::exception;
 
 class Recorder : public QObject
 {
 	Q_OBJECT
+	QAudioFormat format;
     QAudioInput *audio;
-	QFile file;
-   // QTimer *timer;
+	WavFile file;
+	QTimer timer;
 
-
-    void setFormatSettings(QAudioFormat *format);
-	void openFile();
+	void initialiseRecorder();
+	void setupTimer();
+    void printAvailableDevices();
+	void setFormatSettings();
+	void openFile(const QString &fileName);
 	void closeFile();
 public:
-  //  QTimer *timer;
 	Recorder();
     ~Recorder();
     void Start();
 public slots:
-    void Stop();
+	void Stop();
 signals:
-	void bytesSaved(qint64 bytes);
+	void recordingStopped(qint64 savedBytes);
 };
 
 #endif // RECORDER_H
