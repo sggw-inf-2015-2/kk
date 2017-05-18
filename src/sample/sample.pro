@@ -14,11 +14,13 @@ CONFIG += console
 
 SOURCES += main.cpp\
     recorder.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    wavFile.cpp
 
 HEADERS  += \
     recorder.h \
-    mainwindow.h
+    mainwindow.h \
+    wavFile.h
 
 FORMS += \
     mainwindow.ui

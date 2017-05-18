@@ -2,7 +2,7 @@
 #define RECORDER_H
 
 #include <QAudioInput>
-#include <QFile>
+#include "wavFile.h"
 #include <QDebug>
 #include <QTimer>
 #include <exception>
@@ -11,14 +11,15 @@ using std::exception;
 class Recorder : public QObject
 {
 	Q_OBJECT
+	QAudioFormat format;
     QAudioInput *audio;
-	QFile file;
+	WavFile file;
 	QTimer timer;
 
 	void initialiseRecorder();
 	void setupTimer();
     void printAvailableDevices();
-    void setFormatSettings(QAudioFormat *format);
+	void setFormatSettings();
 	void openFile(const QString &fileName);
 	void closeFile();
 public:

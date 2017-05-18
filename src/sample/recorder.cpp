@@ -20,10 +20,9 @@ Recorder::~Recorder()
 
 void Recorder::initialiseRecorder()
 {
-	QAudioFormat format;
-	setFormatSettings(&format);
+	setFormatSettings();
 	QAudioDeviceInfo device = QAudioDeviceInfo::defaultInputDevice();
-	if (!device.isFormatSupported(format)) // Jeśli określony w funkcji setFormatSettings format nie jest obsługiwany, używany jest domyślny
+	if (!device.isFormatSupported(format))
 	{
 		qDebug() << "Format not supported, trying to use the nearest.";
 		format = device.nearestFormat(format);
@@ -38,21 +37,21 @@ void Recorder::setupTimer()
 	connect(&timer, SIGNAL(timeout()), this, SLOT(Stop()));
 }
 
-void Recorder::setFormatSettings(QAudioFormat *format)
+void Recorder::setFormatSettings()
 {
-	format->setChannelCount(1);
-	format->setSampleRate(48000);
-	format->setCodec("audio/pcm");
-	format->setSampleSize(16);
-	format->setByteOrder(QAudioFormat::LittleEndian);
-	format->setSampleType(QAudioFormat::SignedInt);
+	format.setChannelCount(1);
+	format.setSampleRate(48000);
+	format.setCodec("audio/pcm");
+	format.setSampleSize(16);
+	format.setByteOrder(QAudioFormat::LittleEndian);
+	format.setSampleType(QAudioFormat::SignedInt);
 }
 
 void Recorder::Start()
 {
 	try
 	{
-		openFile("audiodata.raw");
+		openFile("audiodata.wav");
 	}
 	catch (exception &)
 	{
@@ -61,13 +60,13 @@ void Recorder::Start()
 	}
 	audio->start(&file);
 
-	// Nagrywaj przez 5 sekund
+	// Record 5 seconds.
 	timer.start();
 }
 
 void Recorder::openFile(const QString &fileName)
 {
-	// Sprawdzenie, czy w katalogu z aplikacją nie znajduje się folder o takiej samej nazwie
+	// Check whether some directory with the same name already exist.
 	QDir testDir(fileName);
 	if (testDir.exists())
 	{
@@ -79,6 +78,7 @@ void Recorder::openFile(const QString &fileName)
 	QDir dir;
 	QString path = dir.absoluteFilePath(fileName);
 	file.setFileName(path);
+	file.setAudioFormat(format);
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
 	{
@@ -91,7 +91,7 @@ void Recorder::openFile(const QString &fileName)
 
 void Recorder::Stop()
 {
-	timer.stop(); // Na wypadek, gdy użytkownik zatrzymał nagrywanie przed czasem
+	timer.stop(); // Stop a timer in case user aborts recording.
 	audio->stop();
 	closeFile();
 
