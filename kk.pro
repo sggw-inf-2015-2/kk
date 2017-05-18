@@ -12,15 +12,15 @@ TARGET = sample
 TEMPLATE = app
 CONFIG += console
 
-SOURCES += main.cpp\
-    recorder.cpp \
-    mainwindow.cpp \
-    wavFile.cpp
+SOURCES += src/main.cpp\
+	src/recorder.cpp \
+	src/mainwindow.cpp \
+	src/wavFile.cpp
 
 HEADERS  += \
-    recorder.h \
-    mainwindow.h \
-    wavFile.h
+	src/recorder.h \
+	src/mainwindow.h \
+	src/wavFile.h
 
 FORMS += \
-    mainwindow.ui
+	src/mainwindow.ui
