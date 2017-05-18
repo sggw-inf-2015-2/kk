@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "recorder.h"
 
+
 namespace Ui {
 class MainWindow;
 }
