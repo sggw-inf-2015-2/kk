@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <exception>
+
 using std::exception;
 
 class Recorder : public QObject
