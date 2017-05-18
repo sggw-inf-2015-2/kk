@@ -60,7 +60,7 @@ void Recorder::setFormatSettings(QAudioFormat *format)
 void Recorder::openFile()
 {
     QDir dir;
-    QString path = dir.absoluteFilePath("audiotest.raw");
+    QString path = dir.absoluteFilePath("shout.wav");
 	file.setFileName(path);
     //file.open()
     /*if (!file.exists())
