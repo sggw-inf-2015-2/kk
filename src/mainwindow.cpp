@@ -7,9 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	ui->deviceComboBox->addItems(recorder.GetAvailableDevices());
     recordOnRun = false;
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
 	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
+	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
 }
 
 MainWindow::~MainWindow()

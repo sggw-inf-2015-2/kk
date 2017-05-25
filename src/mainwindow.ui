@@ -6,15 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>99</height>
+    <width>283</width>
+    <height>129</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Test</string>
+   <string>Konkurs krzykaczy</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QComboBox" name="deviceComboBox"/>
+    </item>
     <item>
      <widget class="QPushButton" name="recordButton">
       <property name="text">
@@ -47,7 +50,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>204</width>
+     <width>283</width>
      <height>21</height>
     </rect>
    </property>
