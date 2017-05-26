@@ -1,8 +1,6 @@
 #include "recorder.h"
 #include <QDir>
 #include <QAudioFormat>
-#include <QTimer>
-#include <stdexcept>
 
 using std::logic_error;
 

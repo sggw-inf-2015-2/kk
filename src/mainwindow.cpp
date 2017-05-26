@@ -29,6 +29,7 @@ void MainWindow::proceed()
 			recordOnRun = true;
 			ui->recordButton->setText(tr("Zatrzymaj"));
 			ui->bytes->clear();
+			ui->deviceComboBox->setEnabled(false);
 		}
 		else
 		{
@@ -47,4 +48,5 @@ void MainWindow::onRecordingStopped(qint64 size)
 	ui->bytes->setText(QString::number((long)size) + tr(" bajtów"));
 	ui->recordButton->setText(tr("Nagrywaj"));
 	recordOnRun = false;
+	ui->deviceComboBox->setEnabled(true);
 }
