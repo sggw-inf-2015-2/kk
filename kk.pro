@@ -10,7 +10,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = sample
 TEMPLATE = app
-CONFIG += console
 
 SOURCES += src/main.cpp\
 	src/recorder.cpp \

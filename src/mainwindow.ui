@@ -6,48 +6,70 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>99</height>
+    <width>756</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Test</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QPushButton" name="recordButton">
-      <property name="text">
-       <string>Nagrywaj</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Zapisane dane:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="bytes">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
+   <widget class="QPushButton" name="recordButton">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Nagrywaj</string>
+    </property>
+   </widget>
+   <widget class="QTableView" name="tableView">
+    <property name="geometry">
+     <rect>
+      <x>515</x>
+      <y>50</y>
+      <width>231</width>
+      <height>311</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>39</y>
+      <width>74</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Zapisane dane:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="bytes">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>39</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>204</width>
+     <width>756</width>
      <height>21</height>
     </rect>
    </property>
