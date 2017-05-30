@@ -7,9 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	ui->deviceComboBox->addItems(recorder.GetAvailableDevices());
     recordOnRun = false;
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
 	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
+	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -27,6 +29,7 @@ void MainWindow::proceed()
 			recordOnRun = true;
 			ui->recordButton->setText(tr("Zatrzymaj"));
 			ui->bytes->clear();
+			ui->deviceComboBox->setEnabled(false);
 		}
 		else
 		{
@@ -45,4 +48,5 @@ void MainWindow::onRecordingStopped(qint64 size)
 	ui->bytes->setText(QString::number((long)size) + tr(" bajtów"));
 	ui->recordButton->setText(tr("Nagrywaj"));
 	recordOnRun = false;
+	ui->deviceComboBox->setEnabled(true);
 }

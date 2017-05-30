@@ -39,7 +39,7 @@ bool WavFile::isFormatSupported()
 	return
 	(format.sampleSize() == 8 && format.sampleType() == QAudioFormat::UnSignedInt)
 	||
-	(format.sampleSize() > 8 && format.sampleType() == QAudioFormat::SignedInt && format.byteOrder() == QAudioFormat::LittleEndian);
+	(format.sampleSize() > 8 && format.sampleType() == QAudioFormat::SignedInt);
 }
 
 bool WavFile::open(QIODevice::OpenMode flags)

@@ -1,14 +1,13 @@
 #include "recorder.h"
 #include <QDir>
 #include <QAudioFormat>
-#include <QTimer>
-#include <stdexcept>
 
 using std::logic_error;
 
 Recorder::Recorder()
 {
-	initialiseRecorder();
+    audio = nullptr;
+	InitialiseRecorder();
 	setupTimer();
 }
 
@@ -18,16 +17,35 @@ Recorder::~Recorder()
         delete audio;
 }
 
-void Recorder::initialiseRecorder()
+void Recorder::InitialiseRecorder(const QString &deviceName)
 {
-	setFormatSettings();
-	QAudioDeviceInfo device = QAudioDeviceInfo::defaultInputDevice();
+	// destroy old QAudioInput object (if exist)
+	if (audio != nullptr)
+		delete audio;
+
+	QAudioDeviceInfo device;
+    if (deviceName.isEmpty())
+		device = QAudioDeviceInfo::defaultInputDevice();
+	else
+	{
+		for (auto inputDevice : QAudioDeviceInfo::availableDevices(QAudio::AudioInput))
+		{
+			if (inputDevice.deviceName() == deviceName)
+			{
+				device = inputDevice;
+				break;
+			}
+		}
+	}
+
+    setFormatSettings();
 	if (!device.isFormatSupported(format))
 	{
 		qDebug() << "Format not supported, trying to use the nearest.";
 		format = device.nearestFormat(format);
 	}
-	audio = new QAudioInput(format);
+	printFormat();
+    audio = new QAudioInput(device, format);
 }
 
 void Recorder::setupTimer()
@@ -43,7 +61,7 @@ void Recorder::setFormatSettings()
 	format.setSampleRate(48000);
 	format.setCodec("audio/pcm");
 	format.setSampleSize(16);
-	format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setByteOrder(QAudioFormat::LittleEndian);
 	format.setSampleType(QAudioFormat::SignedInt);
 }
 
@@ -100,47 +118,26 @@ void Recorder::Stop()
 
 void Recorder::closeFile()
 {
-	file.close();
+    file.close();
 }
 
-void Recorder::printAvailableDevices()
+void Recorder::printFormat() const
+{
+	qDebug() << "Channel count: " << format.channelCount();
+	qDebug() << "Byte order: " << format.byteOrder();
+	qDebug() << "Sample type: " << format.sampleType();
+	qDebug() << "Sample size: " << format.sampleSize();
+	qDebug() << "Sample rate: " << format.sampleRate();
+    qDebug() << "";
+}
+
+QStringList Recorder::GetAvailableDevices() const
 {
     auto devices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
-    int i = 1;
+	QStringList devicesNames;
     for (auto device : devices)
     {
-        qDebug() << QString("Urządzenie %1 ").arg(i) << device.deviceName();
-        qDebug() << "Supported sample sizes:";
-        for (auto sampleSize : device.supportedSampleSizes())
-        {
-            qDebug() << sampleSize;
-        }
-        qDebug() << "Supported sample rates:";
-        for (auto sampleRate : device.supportedSampleRates())
-        {
-            qDebug() << sampleRate;
-        }
-		qDebug() << "Supported codecs:";
-		for (auto codecs : device.supportedCodecs())
-		{
-			qDebug() << codecs;
-		}
-		qDebug() << "Supported channel counts:";
-		for (auto channelCount : device.supportedChannelCounts())
-		{
-			qDebug() << channelCount;
-		}
-		qDebug() << "Supported sample types:";
-		for (auto sampleType : device.supportedSampleTypes())
-		{
-			qDebug() << sampleType;
-		}
-		qDebug() << "Supported byte orders:";
-		for (auto byteOrder : device.supportedByteOrders())
-		{
-			qDebug() << byteOrder;
-		}
-        qDebug() << "\n";
-        ++i;
+		devicesNames.append(device.deviceName());
     }
+	return devicesNames;
 }

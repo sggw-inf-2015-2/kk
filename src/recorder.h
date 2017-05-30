@@ -5,6 +5,7 @@
 #include "wavFile.h"
 #include <QDebug>
 #include <QTimer>
+#include <QStringList>
 #include <exception>
 
 using std::exception;
@@ -17,18 +18,19 @@ class Recorder : public QObject
 	WavFile file;
 	QTimer timer;
 
-	void initialiseRecorder();
 	void setupTimer();
-    void printAvailableDevices();
 	void setFormatSettings();
 	void openFile(const QString &fileName);
 	void closeFile();
+    void printFormat() const;
 public:
 	Recorder();
     ~Recorder();
     void Start();
+	QStringList GetAvailableDevices() const;
 public slots:
 	void Stop();
+	void InitialiseRecorder(const QString &deviceName = "");
 signals:
 	void recordingStopped(qint64 savedBytes);
 };
