@@ -7,38 +7,40 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <String>
+#include <QException>
+#include <exception>
+#include <stdexcept>
 
+enum gender {women=0,man=1};
+
+/**
+ * @brief Store and manage all data about players (users) how shouts
+ */
 class User : public QObject
 {
     Q_OBJECT
-    enum gender {kobieta=0,mezczyzna=1};
     private:
-        static QList<User*> registeredUsers;
+
+        static QList<User> registeredUsers;
         QString firstName;
         QString lastName;
         gender personGender;
         double shoutScore;
         bool attemptedRepeat;
-        //QUuid id;
-        //int id;
     public:
 
         QUuid getId();
-        User(QString firstName,QString lastName);
-        User(QString firstName,QString lastName,gender personGender);
-        User(QString firstName, QString lastName, gender gender,double score);
-        void setShoutScore(float score);
-        //void addUserToList();
-        //QUuid getId();
-        static void createUser(QString firstName,QString lastName,gender personGender);
-        static void editUser(int ID,QString firstName, QString lastName, gender personGender);
+        User& operator =(const User&);//?
+        User(const User& user);
+        User(const QString &firstName,const QString &lastName);
+        User(const QString &firstName,const QString &lastName,gender personGender);
+        User(const QString &firstName,const QString &lastName, gender gender,double score);
+        static void editUser(int ID,const QString &firstName, const QString &lastName, gender personGender);
+        void setShoutScore(double score);
         float getShoutScore();
-        void setScore(double score);
-        static void exportToCSV();
-        static QList<User*> importFromCSV();
-        static void TEST();
-        //QList<User> getAllUsers();
-        //void repeat();
+        static void exportToCSV(const QString &fileName);
+        static void importFromCSV(const QString &fileName);
+        static void TEST();//This function is just for me. Should be remove at the end.
     signals:
 
     public slots:
