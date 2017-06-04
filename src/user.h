@@ -1,20 +1,18 @@
 #ifndef USER_H
 #define USER_H
 #include <QString>
-#include <Qfile>
+#include <QFile>
 #include <QTextStream>
 #include <exception>
 #include <stdexcept>
-//#include <QDebug>
 
-enum gender {women,man,empty};
+enum gender {woman,man};
 
 /**
- * @brief Store and manage all data about players (users) how shouts
+ * @brief Store and manage all data about players (users)
  */
 class User
 {
-    private:
         static QList<User> registeredUsers;
         QString firstName;
         QString lastName;
@@ -28,11 +26,9 @@ class User
         double getShoutScore();
         QString getFirstName();
         QString getLastName();
-        gender getPersonGernder();
+        gender getPersonGender();
         static void exportToCSV(const QString &fileName);
         static QList<User*> importFromCSV(const QString &fileName);
-
-        //static void TEST();
 };
 
 #endif // USER_H

@@ -17,13 +17,15 @@ SOURCES += src/main.cpp\
 	src/recorder.cpp \
 	src/mainwindow.cpp \
 	src/wavFile.cpp \
-    src/userwindow.cpp
+    src/userwindow.cpp \
+    src/user.cpp
 
 HEADERS  += \
 	src/recorder.h \
 	src/mainwindow.h \
 	src/wavFile.h \
-    src/userwindow.h
+    src/userwindow.h \
+    src/user.h
 
 FORMS += \
 	src/mainwindow.ui \

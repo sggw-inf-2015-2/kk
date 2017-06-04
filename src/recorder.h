@@ -12,11 +12,11 @@ using std::exception;
 
 class Recorder : public QObject
 {
-	Q_OBJECT
-	QAudioFormat format;
+    Q_OBJECT
+    QAudioFormat format;
     QAudioInput *audio;
-	WavFile file;
-	QTimer timer;
+    WavFile file;
+    QTimer timer;
 
 	void setupTimer();
 	void setFormatSettings();

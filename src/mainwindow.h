@@ -25,6 +25,8 @@ private:
     Ui::MainWindow *ui;
     bool recordOnRun;
     Recorder recorder;
+
+    void initialiseDeviceList();
 };
 
 #endif // MAINWINDOW_H
