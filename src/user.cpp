@@ -1,7 +1,7 @@
 #include "user.h"
 QList<User> User::registeredUsers;
 
-User::User(const QString &firstName,const QString &lastName, gender personGender=gender::empty,double score=0)
+User::User(const QString &firstName,const QString &lastName, gender personGender=man,double score=0)
 {
     this->firstName = firstName;
     this->lastName = lastName;
@@ -25,7 +25,7 @@ QString User::getLastName()
     return lastName;
 }
 
-gender User::getPersonGernder()
+gender User::getPersonGender()
 {
     return personGender;
 }
@@ -57,14 +57,14 @@ void User::exportToCSV(const QString &fileName)
             stream << u.firstName<<";"<<u.lastName<<";"<<u.personGender<<";"<<QString::number(u.shoutScore) <<""<< endl;
        }
    }else{
-       throw std::logic_error( "File not open to write! (meaby you don't have permission)" );
+       throw std::logic_error("Nie udało się utworzyć pliku. Upewnij się, że masz odpowiednie uprawnienia.");
    }
    file.close();
 }
 
 /**
- * @brief User::importFromCSV - load data about all pleaers (users) to Qlist
- * @warning removes all exesting users in Qlist, without warning
+ * @brief User::importFromCSV - load data about all players (users) to QList
+ * @warning removes all existing users in QList, without warning
  * @param fileName
  */
 QList<User*> User::importFromCSV(const QString &fileName)
@@ -73,7 +73,7 @@ QList<User*> User::importFromCSV(const QString &fileName)
 
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly)) {
-        throw std::logic_error( "File not open to read! (meaby not exist)" );
+        throw std::logic_error("Nie udało się utworzyć pliku. Upewnij się, że masz odpowiednie uprawnienia.");
     }
     QTextStream in(&file);
     QList<User*> list;
@@ -83,8 +83,9 @@ QList<User*> User::importFromCSV(const QString &fileName)
         QString firstName = fields.at(0);
         QString lastName = fields.at(1);
         gender personGender = (gender) fields.at(2).toInt();
-        double score = fields.at(3).toDouble();
+        double score = fields.at(3).toDouble();\
         User user(firstName,lastName,personGender,score);
+        User::registeredUsers.append(user);
         list.append(&registeredUsers.back());
     }
     file.close();
@@ -103,17 +104,3 @@ void User::editUser(int ID, const QString &firstName, const QString &lastName, g
     u.personGender = personGender;
 }
 
-
-//void User::TEST()
-//{
-//    User user1("a","b",gender::women);
-//    User user2("c","d",gender::women);
-//    User user3("e","f");
-//    User user4("g","h",gender::man,2.3);
-//    exportToCSV("mojiUserzy");
-//    QList<User*> list = importFromCSV("mojiUserzy");
-//    qDebug()<<"list: "<<list.size();
-//    for (int i=0;i<list.size();i++){
-//        qDebug()<<list[i]->getFirstName()<<" "<<list[i]->getLastName()<<" "<<list[i]->getPersonGernder()<<" "<<list[i]->getShoutScore()<<" ";
-//    }
-//}

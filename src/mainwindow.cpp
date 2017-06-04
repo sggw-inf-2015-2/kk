@@ -7,8 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-	ui->deviceComboBox->addItems(recorder.GetAvailableDevices());
     recordOnRun = false;
+    initialiseDeviceList();
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
 	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
 	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
@@ -48,5 +48,20 @@ void MainWindow::onRecordingStopped(qint64 size)
 	ui->bytes->setText(QString::number((long)size) + tr(" bajtów"));
 	ui->recordButton->setText(tr("Nagrywaj"));
 	recordOnRun = false;
-	ui->deviceComboBox->setEnabled(true);
+}
+
+void MainWindow::initialiseDeviceList()
+{
+    auto devices = recorder.GetAvailableDevices();
+    if (devices.isEmpty())
+    {
+        // Set 'Nagrywaj' button and device list as disabled, so that user could not interact with them.
+        ui->deviceComboBox->setEnabled(false);
+        ui->recordButton->setEnabled(false);
+        QMessageBox::critical(this, windowTitle(), tr("Nie znaleziono żadnych urządzeń do nagrywania. Sprawdź swoje ustawienia i uruchom program ponownie."));
+    }
+    else
+    {
+        ui->deviceComboBox->addItems(devices);
+    }
 }
