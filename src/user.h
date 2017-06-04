@@ -1,26 +1,20 @@
 #ifndef USER_H
 #define USER_H
-#include <QObject>
 #include <QString>
-#include <QUuid>
 #include <Qfile>
 #include <QTextStream>
-#include <QMessageBox>
-#include <String>
-#include <QException>
 #include <exception>
 #include <stdexcept>
+//#include <QDebug>
 
-enum gender {women=0,man=1};
+enum gender {women,man,empty};
 
 /**
  * @brief Store and manage all data about players (users) how shouts
  */
-class User : public QObject
+class User
 {
-    Q_OBJECT
     private:
-
         static QList<User> registeredUsers;
         QString firstName;
         QString lastName;
@@ -28,22 +22,17 @@ class User : public QObject
         double shoutScore;
         bool attemptedRepeat;
     public:
-
-        QUuid getId();
-        User& operator =(const User&);//?
-        User(const User& user);
-        User(const QString &firstName,const QString &lastName);
-        User(const QString &firstName,const QString &lastName,gender personGender);
         User(const QString &firstName,const QString &lastName, gender gender,double score);
         static void editUser(int ID,const QString &firstName, const QString &lastName, gender personGender);
-        void setShoutScore(double score);
-        float getShoutScore();
+        static void setShoutScore(int id,double score);
+        double getShoutScore();
+        QString getFirstName();
+        QString getLastName();
+        gender getPersonGernder();
         static void exportToCSV(const QString &fileName);
-        static void importFromCSV(const QString &fileName);
-        static void TEST();//This function is just for me. Should be remove at the end.
-    signals:
+        static QList<User*> importFromCSV(const QString &fileName);
 
-    public slots:
+        //static void TEST();
 };
 
 #endif // USER_H
