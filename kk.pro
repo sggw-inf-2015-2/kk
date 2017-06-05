@@ -10,7 +10,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = sample
 TEMPLATE = app
-CONFIG += console
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += src/main.cpp \
@@ -32,4 +31,3 @@ HEADERS  += \
 FORMS += \
     src/mainwindow.ui \
     src/userwindow.ui
-
