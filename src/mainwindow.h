@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "recorder.h"
+#include "userwindow.h"
 
 
 namespace Ui {
@@ -14,7 +15,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(UserWindow *uw, QWidget *parent = 0);
     ~MainWindow();
 
 private slots:
@@ -23,6 +24,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    UserWindow *userWindow;
     bool recordOnRun;
     Recorder recorder;
 
