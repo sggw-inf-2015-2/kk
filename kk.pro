@@ -24,5 +24,5 @@ HEADERS  += \
     src/userwindow.h
 
 FORMS += \
-	src/mainwindow.ui \
-    src/userwindow.ui
+    src/userwindow.ui \
+    src/adminwindow.ui
