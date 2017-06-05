@@ -10,7 +10,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = sample
 TEMPLATE = app
-CONFIG += console
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += src/main.cpp\
@@ -18,16 +17,19 @@ SOURCES += src/main.cpp\
 	src/mainwindow.cpp \
 	src/wavFile.cpp \
     src/userwindow.cpp \
-    src/user.cpp
+    src/user.cpp \
+    src/adduserwindow.cpp
 
 HEADERS  += \
 	src/recorder.h \
 	src/mainwindow.h \
 	src/wavFile.h \
     src/userwindow.h \
-    src/user.h
+    src/user.h \
+    src/adduserwindow.h
 
 FORMS += \
 	src/mainwindow.ui \
-    src/userwindow.ui
+    src/userwindow.ui \
+    src/adduserwindow.ui
 
