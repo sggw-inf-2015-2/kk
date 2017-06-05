@@ -5,6 +5,7 @@
 #include "wavFile.h"
 #include <QDebug>
 #include <QTimer>
+#include <QBuffer>
 #include <QStringList>
 #include <exception>
 
@@ -15,7 +16,10 @@ class Recorder : public QObject
     Q_OBJECT
     QAudioFormat format;
     QAudioInput *audio;
+    // To be deleted in final release:
     WavFile file;
+    //
+    QBuffer buffer;
     QTimer timer;
 
 	void setupTimer();

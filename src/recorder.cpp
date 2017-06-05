@@ -1,6 +1,7 @@
 #include "recorder.h"
 #include <QDir>
 #include <QAudioFormat>
+#include <QDebug>
 
 using std::logic_error;
 
@@ -67,16 +68,18 @@ void Recorder::setFormatSettings()
 
 void Recorder::Start()
 {
-	try
-	{
-		openFile("audiodata.wav");
-	}
-	catch (exception &)
-	{
-		throw;
-		return;
-	}
-	audio->start(&file);
+    // to be deleted in final release:
+//	try
+//	{
+//		openFile("audiodata.wav");
+//	}
+//	catch (exception &)
+//	{
+//		throw;
+//		return;
+//	}
+    buffer.open(QIODevice::ReadWrite);
+    audio->start(&buffer);
 
 	// Record 5 seconds.
 	timer.start();
@@ -111,9 +114,11 @@ void Recorder::Stop()
 {
 	timer.stop(); // Stop a timer in case user aborts recording.
 	audio->stop();
-	closeFile();
+    buffer.close();
+    // TODO: get data from buffer and analyze it.
 
-	emit recordingStopped(file.size());
+    emit recordingStopped(buffer.data().size());
+    buffer.buffer().clear(); // Flush data from underlying QByteArray internal buffer.
 }
 
 void Recorder::closeFile()
