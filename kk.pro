@@ -14,18 +14,16 @@ CONFIG += console
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += src/main.cpp\
-	src/recorder.cpp \
-	src/mainwindow.cpp \
-	src/wavFile.cpp \
-    src/userwindow.cpp \
-    src/user.cpp
+    src/recorder.cpp \
+    src/mainwindow.cpp \
+    src/user.cpp \
+    src/audiomodel.cpp
 
 HEADERS  += \
-	src/recorder.h \
-	src/mainwindow.h \
-	src/wavFile.h \
-    src/userwindow.h \
-    src/user.h
+    src/recorder.h \
+    src/mainwindow.h \
+    src/user.h \
+    src/audiomodel.h
 
 FORMS += \
 	src/mainwindow.ui \
