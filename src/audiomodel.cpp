@@ -7,6 +7,16 @@ AudioModel::AudioModel(QObject *parent) : QObject(parent)
 
 }
 
+QVector<complex<double>> AudioModel::fft(QVector<complex<double> > x)
+{
+    return QVector<complex<double>>();
+}
+
+QVector<complex<double>> AudioModel::ifft(QVector<complex<double> > x)
+{
+    return QVector<complex<double>>();
+}
+
 QVector<complex<double>> AudioModel::convolve(QVector<std::complex<double> > x, QVector<std::complex<double> > y)
 {
     QVector<complex<double>> a = QVector<complex<double>>(2*x.length());
