@@ -25,6 +25,8 @@ private slots:
     void on_AddUserButton_clicked();
 
 
+    void on_EditUserButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     bool recordOnRun;
