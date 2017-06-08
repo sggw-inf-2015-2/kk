@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>947</width>
+    <width>967</width>
     <height>449</height>
    </rect>
   </property>
@@ -18,12 +18,19 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>20</y>
-      <width>171</width>
-      <height>108</height>
+      <y>10</y>
+      <width>233</width>
+      <height>159</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Wybierz urządzenie do nagrywania</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QComboBox" name="deviceComboBox"/>
      </item>
@@ -57,9 +64,9 @@
    <widget class="QPushButton" name="AddUserButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>180</y>
-      <width>121</width>
+      <x>270</x>
+      <y>320</y>
+      <width>151</width>
       <height>51</height>
      </rect>
     </property>
@@ -70,24 +77,33 @@
    <widget class="QTableWidget" name="AdminUserList">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>20</y>
-      <width>441</width>
-      <height>241</height>
+      <x>270</x>
+      <y>10</y>
+      <width>671</width>
+      <height>301</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+    <property name="selectionBehavior">
+     <enum>QAbstractItemView::SelectRows</enum>
     </property>
    </widget>
    <widget class="QPushButton" name="EditUserButton">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>260</y>
-      <width>93</width>
-      <height>28</height>
+      <x>440</x>
+      <y>320</y>
+      <width>151</width>
+      <height>51</height>
      </rect>
     </property>
     <property name="text">
-     <string>Edytuj</string>
+     <string>Edytuj użytkownika</string>
     </property>
    </widget>
   </widget>
@@ -96,8 +112,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>947</width>
-     <height>26</height>
+     <width>967</width>
+     <height>28</height>
     </rect>
    </property>
   </widget>
