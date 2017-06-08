@@ -1,22 +1,29 @@
 #include "adduserwindow.h"
 #include "ui_adduserwindow.h"
-#include <QDebug>
 
 AddUserWindow::AddUserWindow(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AddUserWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(tr("Dodaj użytkownika"));
+    setFixedSize(size());
 }
-AddUserWindow::AddUserWindow(QWidget *parent,QString FirstName, QString SurName, QString g) :
+
+AddUserWindow::AddUserWindow(QWidget *parent,QString FirstName, QString SurName, gender g) :
     QDialog(parent),
     ui(new Ui::AddUserWindow)
 {
-    //QString tmp = "M";
     ui->setupUi(this);
+    setWindowTitle(tr("Edytuj użytkownika"));
+    setFixedSize(size());
+
     ui->FirstNameEdit->setText(FirstName);
     ui->SurNameEdit->setText(SurName);
-
+    if (g == man)
+        ui->MenRadioButton->setChecked(true);
+    else
+        ui->WomenRadioButton->setChecked(true);
 }
 
 void AddUserWindow::accept()
@@ -27,8 +34,7 @@ void AddUserWindow::accept()
         g = man;
     else
         g = woman;
-    saved=true;
-    QDialog::accept(); // zachowanie funkcjonalności
+    QDialog::accept();
 }
 
 AddUserWindow::~AddUserWindow()
