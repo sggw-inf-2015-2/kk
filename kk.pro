@@ -33,5 +33,4 @@ HEADERS  += \
 FORMS += \
     src/mainwindow.ui \
     src/userwindow.ui \
-    src/adduserwindow.ui\
-    src/mainwindow.ui \
+    src/adduserwindow.ui
