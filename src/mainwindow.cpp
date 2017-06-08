@@ -13,6 +13,10 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
 	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
 	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
+    ui->AdminUserList->setColumnCount(4);
+    QStringList Header;
+    Header<<"Imię"<<"Nazwisko"<<"Płeć"<<"Wynik";
+    ui->AdminUserList->setHorizontalHeaderLabels(Header);
 }
 
 MainWindow::~MainWindow()
@@ -65,4 +69,53 @@ void MainWindow::initialiseDeviceList()
     {
         ui->deviceComboBox->addItems(devices);
     }
+}
+
+
+void MainWindow::on_AddUserButton_clicked()
+{
+   auw = new AddUserWindow(this);
+   auw->exec();
+   bool IsSaved = auw->GetSaved();
+   if(IsSaved==true)
+   {
+       User U(auw->GetName(), auw->GetSurName(), auw->GetGender(),0);
+       ui->AdminUserList->setRowCount(ui->AdminUserList->rowCount()+1);
+       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,0,new QTableWidgetItem(U.getFirstName()));
+       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,1,new QTableWidgetItem(U.getLastName()));
+      QString g;
+       if (U.getPersonGender()==man)
+           g="M";
+       else
+           g="K";
+       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,2,new QTableWidgetItem(g));
+       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,3, new QTableWidgetItem(QString::number(U.getShoutScore())));
+   }
+   delete auw;
+}
+
+void MainWindow::on_EditUserButton_clicked()
+{
+    QString Name;
+    QString SurName;
+    QString g;
+    int rowidx = ui->AdminUserList->selectionModel()->currentIndex().row();
+    Name = ui->AdminUserList->item(rowidx,0)->text();
+    SurName = ui->AdminUserList->item(rowidx,1)->text();
+    g =ui->AdminUserList->item(rowidx,3)->text();
+    auw = new AddUserWindow(this,Name,SurName,g);
+    auw->exec();
+    bool IsSaved = auw->GetSaved();
+    if(IsSaved==true)
+    {
+         if (auw->GetGender()==man)
+             g="M";
+         else
+             g="K";
+        User::editUser(rowidx,auw->GetName(),auw->GetSurName(),auw->GetGender());
+        ui->AdminUserList->setItem(rowidx,0,new QTableWidgetItem(auw->GetName()));
+        ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
+        ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(g));
+    }
+    delete auw;
 }

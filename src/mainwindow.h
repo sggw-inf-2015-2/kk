@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 #include "recorder.h"
+#include "user.h"
+#include "adduserwindow.h"
 #include "userwindow.h"
-
 
 namespace Ui {
 class MainWindow;
@@ -21,13 +22,17 @@ public:
 private slots:
     void proceed();
 	void onRecordingStopped(qint64 bytes);
+    void on_AddUserButton_clicked();
+
+
+    void on_EditUserButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     UserWindow *userWindow;
     bool recordOnRun;
     Recorder recorder;
-
+    AddUserWindow *auw;
     void initialiseDeviceList();
 };
 

@@ -14,17 +14,7 @@
    <string>Konkurs krzykaczy</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTableView" name="tableView">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>20</y>
-      <width>691</width>
-      <height>351</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -64,6 +54,42 @@
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="AddUserButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>180</y>
+      <width>121</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dodaj użytkownika</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="AdminUserList">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>20</y>
+      <width>441</width>
+      <height>241</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="EditUserButton">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>260</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Edytuj</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -71,7 +97,7 @@
      <x>0</x>
      <y>0</y>
      <width>947</width>
-     <height>28</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

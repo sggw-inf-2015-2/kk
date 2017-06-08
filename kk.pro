@@ -18,6 +18,7 @@ SOURCES += src/main.cpp \
     src/wavFile.cpp \
     src/user.cpp \
     src/userwindow.cpp \
+    src/adduserwindow.cpp
     src/audiomodel.cpp
 
 HEADERS  += \
@@ -26,8 +27,11 @@ HEADERS  += \
     src/wavFile.h \
     src/user.h \
     src/userwindow.h \
-    src/audiomodel.h
+    src/adduserwindow.h
 
 FORMS += \
+	src/mainwindow.ui \
+    src/userwindow.ui \
+    src/adduserwindow.u\
+    src/audiomodel.h
     src/mainwindow.ui \
-    src/userwindow.ui
