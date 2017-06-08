@@ -2,11 +2,12 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    userWindow = uw;
     recordOnRun = false;
     initialiseDeviceList();
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
