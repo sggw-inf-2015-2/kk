@@ -27,11 +27,11 @@ HEADERS  += \
     src/wavFile.h \
     src/user.h \
     src/userwindow.h \
-    src/adduserwindow.h
+    src/adduserwindow.h \
+    src/audiomodel.h
 
 FORMS += \
-	src/mainwindow.ui \
+    src/mainwindow.ui \
     src/userwindow.ui \
-    src/adduserwindow.u\
-    src/audiomodel.h
+    src/adduserwindow.ui\
     src/mainwindow.ui \
