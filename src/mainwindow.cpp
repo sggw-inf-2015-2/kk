@@ -47,14 +47,12 @@ void MainWindow::proceed()
                 ui->AdminUserList->setItem(rowindex,3,new QTableWidgetItem(QString::number(x)));
                 /*if (!recordOnRun)
                 {
-
                     recorder.Start();
                     recordOnRun = true;
                     ui->recordButton->setText(tr("Zatrzymaj"));
                     ui->bytes->clear();
                     ui->deviceComboBox->setEnabled(false);
                     qDebug() << "ELO MELO";
-
                 }
                 else
                 {
