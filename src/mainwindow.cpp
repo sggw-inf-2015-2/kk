@@ -121,7 +121,6 @@ void MainWindow::on_AddUserButton_clicked()
        // Do not worry about 'new' operator, QTableWidget can handle this.
        checkBoxCell->data(Qt::CheckStateRole);
        checkBoxCell->setCheckState(Qt::Unchecked);
-       checkBoxCell->setCheckState();
        ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1, 4, checkBoxCell);
 
    }
