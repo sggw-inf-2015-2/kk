@@ -1,7 +1,7 @@
 #include "user.h"
 QList<User> User::registeredUsers;
 
-User::User(const QString &firstName,const QString &lastName, gender personGender=man,double score=0)
+User::User(const QString &firstName,const QString &lastName, gender personGender=man,double score=0.0)
 {
     this->firstName = firstName;
     this->lastName = lastName;
@@ -92,7 +92,7 @@ QList<User*> User::importFromCSV(const QString &fileName)
     return list;
 }
 
-User *User::UserPointer(int index)
+User *User::GetUser(int index)
 {
     return &User::registeredUsers[index];
 }

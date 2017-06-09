@@ -16,8 +16,8 @@ public:
     explicit UserWindow(QWidget *parent = 0);
     ~UserWindow();
     void resizeEvent(QResizeEvent *event) override;
-    void SetInfo(QString name);
     void InsertUserToRanking(User *user,int ID);
+    void ClearRanking();
 
 private:
     Ui::UserWindow *ui;

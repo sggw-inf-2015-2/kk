@@ -33,18 +33,18 @@ void MainWindow::proceed()
 {
     int rowindex = ui->AdminUserList->selectionModel()->currentIndex().row();
 	try
-    {    if(!(rowindex<0))
+    {    if (rowindex >= 0)
          {
-            if (!(ui->AdminUserList->item(rowindex,4)->checkState()))
+            if (ui->AdminUserList->item(rowindex,4)->checkState() == Qt::Unchecked)
             {
-                if(ui->AdminUserList->item(rowindex,3)->text()!="0") // sprawdzanie moze sie wysypac przy zmianie sortowania !!
+                if (ui->AdminUserList->item(rowindex,3)->data(Qt::DisplayRole).toDouble() != 0.0)
                 {
                     ui->AdminUserList->item(rowindex,4)->setCheckState(Qt::Checked);
                 }
-                double x = (double)(rand() % 121);
+                double x = (double)(rand() % 121); // Just for test purpose. To be deleted when audio model would be done.
                 User::setShoutScore(rowindex,x);
-                userWindow->InsertUserToRanking(User::UserPointer(rowindex),rowindex);
-                ui->AdminUserList->setItem(rowindex,3,new QTableWidgetItem(QString::number(x)));
+                userWindow->InsertUserToRanking(User::GetUser(rowindex),rowindex);
+                ui->AdminUserList->setItem(rowindex,3,new QTableWidgetItem(QString::number(x))); // Update shout score in adminWindow's table.
                 /*if (!recordOnRun)
                 {
                     recorder.Start();
@@ -52,7 +52,6 @@ void MainWindow::proceed()
                     ui->recordButton->setText(tr("Zatrzymaj"));
                     ui->bytes->clear();
                     ui->deviceComboBox->setEnabled(false);
-                    qDebug() << "ELO MELO";
                 }
                 else
                 {
@@ -61,12 +60,12 @@ void MainWindow::proceed()
             }
             else
             {
-              QMessageBox::information(this, windowTitle(), tr("Ten użytkownik krzyczał już dwa razy"));
+                QMessageBox::information(this, windowTitle(), tr("Ten użytkownik wyczerpał już swój limit podejść."));
             }
         }
         else
         {
-            QMessageBox::information(this, windowTitle(), tr("Zaznacz użytkownika od którego chcesz pobrać próbkę"));
+            QMessageBox::information(this, windowTitle(), tr("Zaznacz użytkownika, od którego chcesz pobrać próbkę krzyku."));
         }
 	}
 	catch (exception &e)
@@ -157,7 +156,7 @@ void MainWindow::on_EditUserButton_clicked()
         ui->AdminUserList->setItem(rowidx,0,new QTableWidgetItem(auw->GetName()));
         ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
         ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(genderText));
-        userWindow->InsertUserToRanking(User::UserPointer(rowidx),rowidx);
+        userWindow->InsertUserToRanking(User::GetUser(rowidx),rowidx);
     }
     delete auw;
 }
