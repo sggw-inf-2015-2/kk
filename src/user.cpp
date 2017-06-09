@@ -92,6 +92,11 @@ QList<User*> User::importFromCSV(const QString &fileName)
     return list;
 }
 
+User *User::UserPointer(int index)
+{
+    return &User::registeredUsers[index];
+}
+
 /**
  * @brief User::editUser replace all data about user, except score
  * @param ID index on Qlist (which user edit)

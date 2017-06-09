@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
+#include <QDebug>
+#include <cstdlib>
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
@@ -29,20 +31,45 @@ MainWindow::~MainWindow()
 
 void MainWindow::proceed()
 {
+    int rowindex = ui->AdminUserList->selectionModel()->currentIndex().row();
 	try
-	{
-		if (!recordOnRun)
-		{
-			recorder.Start();
-			recordOnRun = true;
-			ui->recordButton->setText(tr("Zatrzymaj"));
-			ui->bytes->clear();
-			ui->deviceComboBox->setEnabled(false);
-		}
-		else
-		{
-			recorder.Stop();
-		}
+    {    if(!(rowindex<0))
+         {
+            if (!(ui->AdminUserList->item(rowindex,4)->checkState()))
+            {
+                if(ui->AdminUserList->item(rowindex,3)->text()!="0") // sprawdzanie moze sie wysypac przy zmianie sortowania !!
+                {
+                    ui->AdminUserList->item(rowindex,4)->setCheckState(Qt::Checked);
+                }
+                double x = (double)(rand() % 121);
+                User::setShoutScore(rowindex,x);
+                userWindow->InsertUserToRanking(User::UserPointer(rowindex),rowindex);
+                ui->AdminUserList->setItem(rowindex,3,new QTableWidgetItem(QString::number(x)));
+                /*if (!recordOnRun)
+                {
+
+                    recorder.Start();
+                    recordOnRun = true;
+                    ui->recordButton->setText(tr("Zatrzymaj"));
+                    ui->bytes->clear();
+                    ui->deviceComboBox->setEnabled(false);
+                    qDebug() << "ELO MELO";
+
+                }
+                else
+                {
+                    recorder.Stop();
+                }*/
+            }
+            else
+            {
+              QMessageBox::information(this, windowTitle(), tr("Ten użytkownik krzyczał już dwa razy"));
+            }
+        }
+        else
+        {
+            QMessageBox::information(this, windowTitle(), tr("Zaznacz użytkownika od którego chcesz pobrać próbkę"));
+        }
 	}
 	catch (exception &e)
 	{
@@ -96,7 +123,9 @@ void MainWindow::on_AddUserButton_clicked()
        // Do not worry about 'new' operator, QTableWidget can handle this.
        checkBoxCell->data(Qt::CheckStateRole);
        checkBoxCell->setCheckState(Qt::Unchecked);
+       checkBoxCell->setCheckState();
        ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1, 4, checkBoxCell);
+
    }
    delete auw;
 }
@@ -131,6 +160,7 @@ void MainWindow::on_EditUserButton_clicked()
         ui->AdminUserList->setItem(rowidx,0,new QTableWidgetItem(auw->GetName()));
         ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
         ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(genderText));
+        userWindow->InsertUserToRanking(User::UserPointer(rowidx),rowidx);
     }
     delete auw;
 }

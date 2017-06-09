@@ -1,6 +1,7 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
 
+#include "user.h"
 #include <QMainWindow>
 
 namespace Ui {
@@ -15,6 +16,8 @@ public:
     explicit UserWindow(QWidget *parent = 0);
     ~UserWindow();
     void resizeEvent(QResizeEvent *event) override;
+    void SetInfo(QString name);
+    void InsertUserToRanking(User *user,int ID);
 
 private:
     Ui::UserWindow *ui;
