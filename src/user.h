@@ -29,6 +29,7 @@ class User
         gender getPersonGender();
         static void exportToCSV(const QString &fileName);
         static QList<User*> importFromCSV(const QString &fileName);
+        static User* UserPointer(int index);
 };
 
 #endif // USER_H

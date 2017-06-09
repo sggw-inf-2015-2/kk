@@ -23,8 +23,6 @@ private slots:
     void proceed();
 	void onRecordingStopped(qint64 bytes);
     void on_AddUserButton_clicked();
-
-
     void on_EditUserButton_clicked();
 
 private:
@@ -34,6 +32,7 @@ private:
     Recorder recorder;
     AddUserWindow *auw;
     void initialiseDeviceList();
+
 };
 
 #endif // MAINWINDOW_H

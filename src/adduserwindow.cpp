@@ -1,5 +1,6 @@
 #include "adduserwindow.h"
 #include "ui_adduserwindow.h"
+#include <QMessageBox>
 
 AddUserWindow::AddUserWindow(QWidget *parent) :
     QDialog(parent),
@@ -28,13 +29,24 @@ AddUserWindow::AddUserWindow(QWidget *parent,QString FirstName, QString SurName,
 
 void AddUserWindow::accept()
 {
-    name = ui->FirstNameEdit->text();
-    surname = ui->SurNameEdit->text();
-    if (ui->MenRadioButton->isChecked())
-        g = man;
+    if (!(ui->FirstNameEdit->text().isEmpty()))
+    {
+         name = ui->FirstNameEdit->text();
+         if (!(ui->SurNameEdit->text().isEmpty()))
+         {
+               surname = ui->SurNameEdit->text();
+               (ui->MenRadioButton->isChecked()) ? g=man :g=woman;
+                QDialog::accept();
+         }
+         else
+         {
+            QMessageBox::critical(this, windowTitle(), tr("Pole nazwisko jest puste"));
+         }
+    }
     else
-        g = woman;
-    QDialog::accept();
+    {
+         QMessageBox::critical(this, windowTitle(), tr("Pole imię jest puste"));
+    }
 }
 
 AddUserWindow::~AddUserWindow()
