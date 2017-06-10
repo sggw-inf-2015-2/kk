@@ -69,4 +69,5 @@ void UserWindow::InsertUserToRanking(User *user, int ID)
 void UserWindow::ClearRanking()
 {
     ui->UserList->clearContents();
+    ui->UserList->setRowCount(0);
 }

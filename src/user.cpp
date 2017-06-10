@@ -83,9 +83,8 @@ QList<User*> User::importFromCSV(const QString &fileName)
         QString firstName = fields.at(0);
         QString lastName = fields.at(1);
         gender personGender = (gender) fields.at(2).toInt();
-        double score = fields.at(3).toDouble();\
+        double score = fields.at(3).toDouble();
         User user(firstName,lastName,personGender,score);
-        User::registeredUsers.append(user);
         list.append(&registeredUsers.back());
     }
     file.close();

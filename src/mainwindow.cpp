@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
-#include <QDebug>
+#include <QFileDialog>
 #include <cstdlib>
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
@@ -98,6 +98,21 @@ void MainWindow::initialiseDeviceList()
     }
 }
 
+void MainWindow::insertUserToList(User * const user)
+{
+    int row = ui->AdminUserList->rowCount() - 1;
+    ui->AdminUserList->setItem(row, 0, new QTableWidgetItem(user->getFirstName()));
+    ui->AdminUserList->setItem(row, 1, new QTableWidgetItem(user->getLastName()));
+    QString g = user->getPersonGender() == man ? "M" : "K";
+    ui->AdminUserList->setItem(row, 2, new QTableWidgetItem(g));
+    ui->AdminUserList->setItem(row, 3, new QTableWidgetItem(QString::number(user->getShoutScore())));
+
+    auto *checkBoxCell = new QTableWidgetItem(); // Need to assign QTableWidgetItem's address to a pointer in order to call next two functions
+    // Do not worry about 'new' operator, QTableWidget can handle this.
+    checkBoxCell->data(Qt::CheckStateRole);
+    checkBoxCell->setCheckState(Qt::Unchecked);
+    ui->AdminUserList->setItem(row, 4, checkBoxCell);
+}
 
 void MainWindow::on_AddUserButton_clicked()
 {
@@ -106,22 +121,7 @@ void MainWindow::on_AddUserButton_clicked()
    {
        User U(auw->GetName(), auw->GetSurName(), auw->GetGender(),0);
        ui->AdminUserList->setRowCount(ui->AdminUserList->rowCount()+1);
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,0,new QTableWidgetItem(U.getFirstName()));
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,1,new QTableWidgetItem(U.getLastName()));
-       QString g;
-       if (U.getPersonGender()==man)
-           g="M";
-       else
-           g="K";
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,2,new QTableWidgetItem(g));
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,3, new QTableWidgetItem(QString::number(U.getShoutScore())));
-
-       auto *checkBoxCell = new QTableWidgetItem(); // Need to assign QTableWidgetItem's address to a pointer in order to call next two functions
-       // Do not worry about 'new' operator, QTableWidget can handle this.
-       checkBoxCell->data(Qt::CheckStateRole);
-       checkBoxCell->setCheckState(Qt::Unchecked);
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1, 4, checkBoxCell);
-
+       insertUserToList(&U);
    }
    delete auw;
 }
@@ -156,7 +156,45 @@ void MainWindow::on_EditUserButton_clicked()
         ui->AdminUserList->setItem(rowidx,0,new QTableWidgetItem(auw->GetName()));
         ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
         ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(genderText));
-        userWindow->InsertUserToRanking(User::GetUser(rowidx),rowidx);
     }
     delete auw;
+}
+
+void MainWindow::on_ExportUsersDataButton_clicked()
+{
+    QString filename = QFileDialog::getSaveFileName(
+                    this, "Zapisz plik","","*.csv");
+    filename.append(".csv");
+    if (filename == "")
+        return;
+    User::exportToCSV(filename);
+}
+
+void MainWindow::on_ImportUsersDataButton_clicked()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, windowTitle(), tr("Zaimportowanie nowych danych spowoduje utratę wszystkich niezapisanych danych. Czy kontynuować?"),
+                                   QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::No)
+    {
+       return;
+    }
+
+    QString filename = QFileDialog::getOpenFileName(
+                this, tr(""),"","Wszystkie pliki (*.*);;Pliki eksportu (*.csv))");
+    if (filename == "")
+        return;
+    auto users = User::importFromCSV(filename);
+
+    ui->AdminUserList->clearContents();
+    ui->AdminUserList->setRowCount(0);
+    userWindow->ClearRanking();
+
+    for (auto user : users)
+    {
+        ui->AdminUserList->setRowCount(ui->AdminUserList->rowCount() + 1);
+        insertUserToList(user);
+        if (user->getShoutScore() != 0.0)
+            userWindow->InsertUserToRanking(user, ui->AdminUserList->rowCount() - 1);
+    }
 }

@@ -24,6 +24,8 @@ private slots:
 	void onRecordingStopped(qint64 bytes);
     void on_AddUserButton_clicked();
     void on_EditUserButton_clicked();
+    void on_ImportUsersDataButton_clicked();
+    void on_ExportUsersDataButton_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -31,8 +33,9 @@ private:
     bool recordOnRun;
     Recorder recorder;
     AddUserWindow *auw;
-    void initialiseDeviceList();
 
+    void initialiseDeviceList();
+    void insertUserToList(User * const user);
 };
 
 #endif // MAINWINDOW_H

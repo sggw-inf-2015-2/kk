@@ -106,6 +106,32 @@
      <string>Edytuj użytkownika</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="ExportUsersDataButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>300</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Eksportuj do pliku</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ImportUsersDataButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>340</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Importuj z pliku</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
