@@ -22,6 +22,7 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     Header<<"Imię"<<"Nazwisko"<<"Płeć"<<"Wynik"<<"Czy było ponowne podejście?";
     ui->AdminUserList->setHorizontalHeaderLabels(Header);
     ui->AdminUserList->horizontalHeader()->setStretchLastSection(true); // Resize last column to fit QTableWidget edge.
+    ui->AllRadioButton->setChecked(true);
 }
 
 MainWindow::~MainWindow()
@@ -114,6 +115,7 @@ void MainWindow::insertUserToList(User * const user)
     ui->AdminUserList->setItem(row, 4, checkBoxCell);
 }
 
+
 void MainWindow::on_AddUserButton_clicked()
 {
    auw = new AddUserWindow(this);
@@ -197,4 +199,24 @@ void MainWindow::on_ImportUsersDataButton_clicked()
         if (user->getShoutScore() != 0.0)
             userWindow->InsertUserToRanking(user, ui->AdminUserList->rowCount() - 1);
     }
+}
+
+void MainWindow::on_MenRadioButton_toggled(bool checked)
+{
+    userWindow->ShowAll();
+    userWindow->SetShowing(m);
+    userWindow->HideWomen();
+}
+
+void MainWindow::on_WomenRadioButton_toggled(bool checked)
+{
+    userWindow->ShowAll();
+    userWindow->SetShowing(w);
+    userWindow->HideMen();
+}
+
+void MainWindow::on_AllRadioButton_toggled(bool checked)
+{
+    userWindow->ShowAll();
+    userWindow->SetShowing(a);
 }

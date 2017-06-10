@@ -21,6 +21,7 @@ UserWindow::UserWindow(QWidget *parent) :
     QStringList Header;
     Header << "Imię" << "Nazwisko" << "Wynik [dB]";
     ui->UserList->setHorizontalHeaderLabels(Header);
+    Showing = a;
 }
 
 UserWindow::~UserWindow()
@@ -64,6 +65,16 @@ void UserWindow::InsertUserToRanking(User *user, int ID)
      QString genderText = user->getPersonGender() == man ? "M" : "K";
      ui->UserList->setItem(ui->UserList->rowCount()-1,4,new QTableWidgetItem(genderText));
      ui->UserList->sortByColumn(2);
+     if(Showing == w)
+     {
+         ShowAll();
+         HideMen();
+     }
+     else if(Showing == m)
+     {
+         ShowAll();
+         HideWomen();
+     }
 }
 
 void UserWindow::ClearRanking()
@@ -71,3 +82,41 @@ void UserWindow::ClearRanking()
     ui->UserList->clearContents();
     ui->UserList->setRowCount(0);
 }
+
+void UserWindow::SetShowing(showing Showing)
+{
+    this->Showing=Showing;
+}
+
+void UserWindow::HideMen()
+{
+    for(int i=0;i<ui->UserList->rowCount();i++)
+    {
+        if(ui->UserList->item(i,4)->text()=="M")
+        {
+            ui->UserList->setRowHidden(i,true);
+        }
+    }
+}
+void UserWindow::HideWomen()
+{
+    for(int i=0;i<ui->UserList->rowCount();i++)
+    {
+        if(ui->UserList->item(i,4)->text()=="K")
+        {
+            ui->UserList->setRowHidden(i,true);
+        }
+    }
+}
+void UserWindow::ShowAll()
+{
+    for(int i=0;i<ui->UserList->rowCount();i++)
+    {
+        ui->UserList->setRowHidden(i,false);
+    }
+}
+
+
+
+
+
