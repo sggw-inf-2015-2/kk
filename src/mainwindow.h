@@ -25,6 +25,12 @@ private slots:
     void on_AddUserButton_clicked();
     void on_EditUserButton_clicked();
 
+    void on_MenRadioButton_toggled(bool checked);
+
+    void on_WomenRadioButton_toggled(bool checked);
+
+    void on_AllRadioButton_toggled(bool checked);
+
 private:
     Ui::MainWindow *ui;
     UserWindow *userWindow;
