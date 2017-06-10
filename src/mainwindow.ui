@@ -106,53 +106,47 @@
      <string>Edytuj użytkownika</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="MenRadioButton">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>610</x>
       <y>330</y>
-      <width>82</width>
-      <height>17</height>
+      <width>139</width>
+      <height>19</height>
      </rect>
     </property>
-    <property name="text">
-     <string>M</string>
-    </property>
-    <attribute name="buttonGroup">
-     <string notr="true">buttonGroup</string>
-    </attribute>
-   </widget>
-   <widget class="QRadioButton" name="WomenRadioButton">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>330</y>
-      <width>82</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>K</string>
-    </property>
-    <attribute name="buttonGroup">
-     <string notr="true">buttonGroup</string>
-    </attribute>
-   </widget>
-   <widget class="QRadioButton" name="AllRadioButton">
-    <property name="geometry">
-     <rect>
-      <x>690</x>
-      <y>330</y>
-      <width>82</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Wszyscy</string>
-    </property>
-    <attribute name="buttonGroup">
-     <string notr="true">buttonGroup</string>
-    </attribute>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QRadioButton" name="MenRadioButton">
+       <property name="text">
+        <string>M</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="WomenRadioButton">
+       <property name="text">
+        <string>K</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="AllRadioButton">
+       <property name="text">
+        <string>Wszyscy</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
