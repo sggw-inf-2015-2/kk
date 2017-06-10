@@ -1,35 +1,35 @@
 #ifndef USER_H
 #define USER_H
+#include <QString>
+#include <QFile>
+#include <QTextStream>
+#include <exception>
+#include <stdexcept>
 
-#include <QObject>
-#include <QUuid>
+enum gender {woman,man};
 
-class User : public QObject
+/**
+ * @brief Store and manage all data about players (users)
+ */
+class User
 {
-    Q_OBJECT
-
-    static QList<User> registeredUsers;
-
-    QString firstName;
-    QString lastName;
-    float shoutScore;
-    QUuid id;
-
-public:
-    explicit User(QObject *parent = 0);
-
-    static void addUser(QString firstName, QString lastName);
-    static void removeUser(QUuid id);
-
-    QUuid getId();
-    float getShoutScore();
-
-    void save();
-
-signals:
-
-public slots:
-    void setShoutScore(float score);
+        static QList<User> registeredUsers;
+        QString firstName;
+        QString lastName;
+        gender personGender;
+        double shoutScore;
+        bool attemptedRepeat;
+    public:
+        User(const QString &firstName,const QString &lastName, gender gender,double score);
+        static void editUser(int ID,const QString &firstName, const QString &lastName, gender personGender);
+        static void setShoutScore(int id,double score);
+        double getShoutScore();
+        QString getFirstName();
+        QString getLastName();
+        gender getPersonGender();
+        static void exportToCSV(const QString &fileName);
+        static QList<User*> importFromCSV(const QString &fileName);
+        static User* GetUser(int index);
 };
 
 #endif // USER_H
