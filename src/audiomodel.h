@@ -14,7 +14,7 @@ class AudioModel : public QObject
     static const complex<double> ZERO;
 public:
     explicit AudioModel(QObject *parent = 0);
-
+    static double CalibrationData;
     QVector<complex<double>> convolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
     QVector<complex<double>> cconvolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
 
