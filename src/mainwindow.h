@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(UserWindow *uw, QWidget *parent = 0);
+    static Recorder* GetRecorder();
     ~MainWindow();
 	void closeEvent(QCloseEvent *event) override;
 
