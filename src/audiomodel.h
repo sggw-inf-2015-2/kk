@@ -23,6 +23,8 @@ class AudioModel : public QObject
 
 public slots:
     static double computeLevel(QVector<std::complex<double>> x, double calibrationOffset = 0);
+public:
+    static double CalibrationData;
 };
 
 #endif // AUDIOMODEL_H

@@ -21,6 +21,7 @@ SOURCES += src/main.cpp \
     src/user.cpp \
     src/userwindow.cpp \
     src/adduserwindow.cpp \
+	  src/calibrator.cpp \
     src/audiomodel.cpp
 
 HEADERS  += \
@@ -30,7 +31,8 @@ HEADERS  += \
     src/user.h \
     src/userwindow.h \
     src/adduserwindow.h \
-    src/audiomodel.h
+    src/audiomodel.h \
+    src/calibrator.h
 
 
 FORMS += \
