@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <cstdlib>
 
+
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -99,9 +100,10 @@ void MainWindow::initialiseDeviceList()
     }
 }
 
- static Recorder GetRecorder()
+ Recorder* MainWindow::GetRecorder()
  {
-    Recorder *Calibration =& MainWindow::recorder;
+    Recorder *calibration = &recorder;
+    return calibration;
  }
 
 void MainWindow::on_AddUserButton_clicked()

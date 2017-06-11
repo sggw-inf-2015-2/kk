@@ -12,7 +12,7 @@ class Calibrator : public QObject
     Q_OBJECT
 public:
     explicit Calibrator(QObject *parent = nullptr);
-    void Calibrate();
+    static void Calibrate();
 signals:
 
 public slots:
