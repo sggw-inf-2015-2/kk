@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>967</width>
-    <height>449</height>
+    <width>944</width>
+    <height>372</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>233</width>
-      <height>159</height>
+      <width>211</width>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -41,33 +41,15 @@
        </property>
       </widget>
      </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Zapisane dane:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="bytes">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
     </layout>
    </widget>
    <widget class="QPushButton" name="AddUserButton">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>320</y>
-      <width>151</width>
-      <height>51</height>
+      <x>10</x>
+      <y>110</y>
+      <width>111</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -77,10 +59,10 @@
    <widget class="QTableWidget" name="AdminUserList">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>230</x>
       <y>10</y>
-      <width>671</width>
-      <height>301</height>
+      <width>701</width>
+      <height>321</height>
      </rect>
     </property>
     <property name="editTriggers">
@@ -96,56 +78,43 @@
    <widget class="QPushButton" name="EditUserButton">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>320</y>
-      <width>151</width>
-      <height>51</height>
+      <x>10</x>
+      <y>150</y>
+      <width>111</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
      <string>Edytuj użytkownika</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="ExportUsersDataButton">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>300</y>
-      <width>131</width>
-      <height>31</height>
+      <x>10</x>
+      <y>210</y>
+      <width>91</width>
+      <height>96</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Eksportuj do pliku</string>
+    <property name="title">
+     <string>Wyświetlanie</string>
     </property>
-   </widget>
-   <widget class="QPushButton" name="ImportUsersDataButton">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>340</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Importuj z pliku</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>330</y>
-      <width>139</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QRadioButton" name="AllRadioButton">
+       <property name="text">
+        <string>Wszyscy</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
      <item>
       <widget class="QRadioButton" name="MenRadioButton">
        <property name="text">
-        <string>M</string>
+        <string>Mężczyźni</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup</string>
@@ -155,17 +124,7 @@
      <item>
       <widget class="QRadioButton" name="WomenRadioButton">
        <property name="text">
-        <string>K</string>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="AllRadioButton">
-       <property name="text">
-        <string>Wszyscy</string>
+        <string>Kobiety</string>
        </property>
        <attribute name="buttonGroup">
         <string notr="true">buttonGroup</string>
@@ -180,11 +139,46 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>967</width>
+     <width>944</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuT">
+    <property name="title">
+     <string>Program</string>
+    </property>
+    <addaction name="actionExportToCsv"/>
+    <addaction name="actionImportFromCsv"/>
+    <addaction name="separator"/>
+    <addaction name="actionCalibrate"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose"/>
+   </widget>
+   <addaction name="menuT"/>
   </widget>
+  <action name="actionExportToCsv">
+   <property name="text">
+    <string>Eksportuj do CSV...</string>
+   </property>
+  </action>
+  <action name="actionImportFromCsv">
+   <property name="text">
+    <string>Importuj z CSV...</string>
+   </property>
+  </action>
+  <action name="actionCalibrate">
+   <property name="text">
+    <string>Kalibruj</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Zakończ</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

@@ -9,6 +9,7 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	setFixedSize(size());
     userWindow = uw;
     recordOnRun = false;
     initialiseDeviceList();
@@ -27,7 +28,27 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	QMessageBox::StandardButton resBtn = QMessageBox::question(this, tr("Zamykanie programu"), tr("Czy chcesz eksportować listę do pliku przed zamknięciem?"), QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
+	if (resBtn == QMessageBox::Cancel)
+	{
+		event->ignore();
+	}
+	else if (resBtn == QMessageBox::Yes)
+	{
+		on_actionExportToCsv_triggered();
+		event->accept();
+		userWindow->close();
+	}
+	else
+	{
+		event->accept();
+		userWindow->close();
+	}
 }
 
 void MainWindow::proceed()
@@ -78,7 +99,7 @@ void MainWindow::proceed()
 
 void MainWindow::onRecordingStopped(qint64 size)
 {
-	ui->bytes->setText(QString::number((long)size) + tr(" bajtów"));
+	qDebug() << "Rozmiar bufora:" << size;
 	ui->recordButton->setText(tr("Nagrywaj"));
 	recordOnRun = false;
 }
@@ -158,21 +179,22 @@ void MainWindow::on_EditUserButton_clicked()
         ui->AdminUserList->setItem(rowidx,0,new QTableWidgetItem(auw->GetName()));
         ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
         ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(genderText));
+		auto user = User::GetUser(rowidx);
+		userWindow->InsertUserToRanking(user, rowidx);
     }
     delete auw;
 }
 
-void MainWindow::on_ExportUsersDataButton_clicked()
+void MainWindow::on_actionExportToCsv_triggered()
 {
-    QString filename = QFileDialog::getSaveFileName(
-                    this, "Zapisz plik","","*.csv");
-    filename.append(".csv");
-    if (filename == "")
-        return;
-    User::exportToCSV(filename);
+	QString filename = QFileDialog::getSaveFileName(
+				this, tr("Zapisz plik"), "", tr("Pliki CSV (*.csv);;Wszystkie pliki (*)"));
+	if (filename == "")
+		return;
+	User::exportToCSV(filename);
 }
 
-void MainWindow::on_ImportUsersDataButton_clicked()
+void MainWindow::on_actionImportFromCsv_triggered()
 {
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, windowTitle(), tr("Zaimportowanie nowych danych spowoduje utratę wszystkich niezapisanych danych. Czy kontynuować?"),
@@ -182,12 +204,21 @@ void MainWindow::on_ImportUsersDataButton_clicked()
        return;
     }
 
-    QString filename = QFileDialog::getOpenFileName(
-                this, tr(""),"","Wszystkie pliki (*.*);;Pliki eksportu (*.csv))");
-    if (filename == "")
-        return;
-    auto users = User::importFromCSV(filename);
+	QFileDialog fdialog(this);
+	QString filename;
+	fdialog.setFileMode(QFileDialog::ExistingFile);
+	QStringList filters;
+	filters << tr("Plik CSV (*.csv)")
+			<< tr("Wszystkie pliki (*)");
+	fdialog.setNameFilters(filters);
+	if (fdialog.exec())
+	{
+		filename = fdialog.selectedFiles().front();
+	}
+	else
+		return;
 
+	auto users = User::importFromCSV(filename);
     ui->AdminUserList->clearContents();
     ui->AdminUserList->setRowCount(0);
     userWindow->ClearRanking();
@@ -203,6 +234,8 @@ void MainWindow::on_ImportUsersDataButton_clicked()
 
 void MainWindow::on_MenRadioButton_toggled(bool checked)
 {
+	if (checked == false)
+		return;
     userWindow->ShowAll();
     userWindow->SetShowing(m);
     userWindow->HideWomen();
@@ -210,6 +243,8 @@ void MainWindow::on_MenRadioButton_toggled(bool checked)
 
 void MainWindow::on_WomenRadioButton_toggled(bool checked)
 {
+	if (checked == false)
+		return;
     userWindow->ShowAll();
     userWindow->SetShowing(w);
     userWindow->HideMen();
@@ -217,6 +252,18 @@ void MainWindow::on_WomenRadioButton_toggled(bool checked)
 
 void MainWindow::on_AllRadioButton_toggled(bool checked)
 {
+	if (checked == false)
+		return;
     userWindow->ShowAll();
     userWindow->SetShowing(a);
+}
+
+void MainWindow::on_actionCalibrate_triggered()
+{
+	// To be implemented.
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+	QApplication::closeAllWindows();
 }

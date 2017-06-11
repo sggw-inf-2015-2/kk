@@ -52,6 +52,16 @@ void UserWindow::InsertUserToRanking(User *user, int ID)
              QString genderText = user->getPersonGender() == man ? "M" : "K";
              ui->UserList->setItem(ui->UserList->rowCount()-1,4,new QTableWidgetItem(genderText));
              ui->UserList->sortByColumn(2);
+			 if(Showing == w)
+			 {
+				 ShowAll();
+				 HideMen();
+			 }
+			 else if(Showing == m)
+			 {
+				 ShowAll();
+				 HideWomen();
+			 }
              return;
          }
      }

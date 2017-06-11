@@ -2,10 +2,10 @@
 QList<User> User::registeredUsers;
 
 /**
- * @brief Konstruktor. Tworzy obiekt użytnikownika i dodaje go do listy wszystkich użytkowników.
+ * @brief Konstruktor. Tworzy obiekt użytkownika i dodaje go do listy wszystkich użytkowników.
  * @param firstName Imię użytkownika.
  * @param lastName Nazwisko użytkownika.
- * @param personGender Płeć użytkownika. Domyślną wartością jest mężczyzna (gender::man).
+ * @param personGender Płeć użytkownika. Domyślną wartością jest gender::man.
  * @param score Wynik użytkownika. Domyślną wartością jest 0.
  * @warning Nie należy tworzyć obiektów typu User w celu innym, niż dodanie nowego użytkownika w programie. Takie zachowanie prowadzi do powstawania
  * duplikatów w statycznej liście użytkowników.
