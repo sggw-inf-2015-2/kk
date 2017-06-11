@@ -1,8 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
-#include <QDebug>
-#include <cstdlib>
+#include <QFileDialog>
 
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
@@ -10,12 +9,12 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	setFixedSize(size());
     userWindow = uw;
     recordOnRun = false;
     initialiseDeviceList();
 
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
-	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
 	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
 
     ui->AdminUserList->setColumnCount(5);
@@ -28,7 +27,27 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+	delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	QMessageBox::StandardButton resBtn = QMessageBox::question(this, tr("Zamykanie programu"), tr("Czy chcesz eksportować listę do pliku przed zamknięciem?"), QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
+	if (resBtn == QMessageBox::Cancel)
+	{
+		event->ignore();
+	}
+	else if (resBtn == QMessageBox::Yes)
+	{
+		on_actionExportToCsv_triggered();
+		event->accept();
+		userWindow->close();
+	}
+	else
+	{
+		event->accept();
+		userWindow->close();
+	}
 }
 
 void MainWindow::proceed()
@@ -43,22 +62,19 @@ void MainWindow::proceed()
                 {
                     ui->AdminUserList->item(rowindex,4)->setCheckState(Qt::Checked);
                 }
-                double x = (double)(rand() % 121); // Just for test purpose. To be deleted when audio model would be done.
-                User::setShoutScore(rowindex,x);
-                userWindow->InsertUserToRanking(User::GetUser(rowindex),rowindex);
-                ui->AdminUserList->setItem(rowindex,3,new QTableWidgetItem(QString::number(x))); // Update shout score in adminWindow's table.
-                /*if (!recordOnRun)
+				if (!recordOnRun)
                 {
+					connect(&recorder, SIGNAL(recordingStopped(const QVector<std::complex<double> > &)), this, SLOT(onRecordingStopped(const QVector<std::complex<double> > &)));
+					currentUser = rowindex; // onRecordingStopped() slot must know, to which user it should assigns shout level.
                     recorder.Start();
                     recordOnRun = true;
                     ui->recordButton->setText(tr("Zatrzymaj"));
-                    ui->bytes->clear();
                     ui->deviceComboBox->setEnabled(false);
                 }
                 else
                 {
                     recorder.Stop();
-                }*/
+				}
             }
             else
             {
@@ -77,11 +93,17 @@ void MainWindow::proceed()
 	}
 }
 
-void MainWindow::onRecordingStopped(qint64 size)
+void MainWindow::onRecordingStopped(const QVector<std::complex<double> > &complexData)
 {
-	ui->bytes->setText(QString::number((long)size) + tr(" bajtów"));
+	// Call computeLevel() here...
+
+	// User::setShoutScore(currentUser, ...);
+	// userWindow->InsertUserToRanking(User::GetUser(currentUser), currentUser);
+	// ui->AdminUserList->setItem(currentUser,3,new QTableWidgetItem(QString::number(...))); // Update shout score in adminWindow's table.
 	ui->recordButton->setText(tr("Nagrywaj"));
+	ui->deviceComboBox->setEnabled(true);
 	recordOnRun = false;
+	disconnect(&recorder, 0, this, 0); // Prevent mainWindow from receiving signals from recorder.
 }
 
 void MainWindow::initialiseDeviceList()
@@ -100,11 +122,21 @@ void MainWindow::initialiseDeviceList()
     }
 }
 
- Recorder* MainWindow::GetRecorder()
- {
-    Recorder *calibration = &recorder;
-    return calibration;
- }
+void MainWindow::insertUserToList(User * const user)
+{
+    int row = ui->AdminUserList->rowCount() - 1;
+    ui->AdminUserList->setItem(row, 0, new QTableWidgetItem(user->getFirstName()));
+    ui->AdminUserList->setItem(row, 1, new QTableWidgetItem(user->getLastName()));
+    QString g = user->getPersonGender() == man ? "M" : "K";
+    ui->AdminUserList->setItem(row, 2, new QTableWidgetItem(g));
+    ui->AdminUserList->setItem(row, 3, new QTableWidgetItem(QString::number(user->getShoutScore())));
+
+    auto *checkBoxCell = new QTableWidgetItem(); // Need to assign QTableWidgetItem's address to a pointer in order to call next two functions
+    // Do not worry about 'new' operator, QTableWidget can handle this.
+    checkBoxCell->data(Qt::CheckStateRole);
+    checkBoxCell->setCheckState(Qt::Unchecked);
+	ui->AdminUserList->setItem(row, 4, checkBoxCell);
+}
 
 void MainWindow::on_AddUserButton_clicked()
 {
@@ -113,22 +145,7 @@ void MainWindow::on_AddUserButton_clicked()
    {
        User U(auw->GetName(), auw->GetSurName(), auw->GetGender(),0);
        ui->AdminUserList->setRowCount(ui->AdminUserList->rowCount()+1);
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,0,new QTableWidgetItem(U.getFirstName()));
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,1,new QTableWidgetItem(U.getLastName()));
-       QString g;
-       if (U.getPersonGender()==man)
-           g="M";
-       else
-           g="K";
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,2,new QTableWidgetItem(g));
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1,3, new QTableWidgetItem(QString::number(U.getShoutScore())));
-
-       auto *checkBoxCell = new QTableWidgetItem(); // Need to assign QTableWidgetItem's address to a pointer in order to call next two functions
-       // Do not worry about 'new' operator, QTableWidget can handle this.
-       checkBoxCell->data(Qt::CheckStateRole);
-       checkBoxCell->setCheckState(Qt::Unchecked);
-       ui->AdminUserList->setItem(ui->AdminUserList->rowCount()-1, 4, checkBoxCell);
-
+       insertUserToList(&U);
    }
    delete auw;
 }
@@ -163,14 +180,63 @@ void MainWindow::on_EditUserButton_clicked()
         ui->AdminUserList->setItem(rowidx,0,new QTableWidgetItem(auw->GetName()));
         ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
         ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(genderText));
-        userWindow->InsertUserToRanking(User::GetUser(rowidx),rowidx);
+		auto user = User::GetUser(rowidx);
+		userWindow->InsertUserToRanking(user, rowidx);
     }
     delete auw;
 }
 
+void MainWindow::on_actionExportToCsv_triggered()
+{
+	QString filename = QFileDialog::getSaveFileName(
+				this, tr("Zapisz plik"), "", tr("Pliki CSV (*.csv);;Wszystkie pliki (*)"));
+	if (filename == "")
+		return;
+	User::exportToCSV(filename);
+}
+
+void MainWindow::on_actionImportFromCsv_triggered()
+{
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, windowTitle(), tr("Zaimportowanie nowych danych spowoduje utratę wszystkich niezapisanych danych. Czy kontynuować?"),
+                                   QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::No)
+    {
+       return;
+    }
+
+	QFileDialog fdialog(this);
+	QString filename;
+	fdialog.setFileMode(QFileDialog::ExistingFile);
+	QStringList filters;
+	filters << tr("Plik CSV (*.csv)")
+			<< tr("Wszystkie pliki (*)");
+	fdialog.setNameFilters(filters);
+	if (fdialog.exec())
+	{
+		filename = fdialog.selectedFiles().front();
+	}
+	else
+		return;
+
+	auto users = User::importFromCSV(filename);
+    ui->AdminUserList->clearContents();
+    ui->AdminUserList->setRowCount(0);
+    userWindow->ClearRanking();
+
+    for (auto user : users)
+    {
+        ui->AdminUserList->setRowCount(ui->AdminUserList->rowCount() + 1);
+        insertUserToList(user);
+        if (user->getShoutScore() != 0.0)
+            userWindow->InsertUserToRanking(user, ui->AdminUserList->rowCount() - 1);
+    }
+}
 
 void MainWindow::on_MenRadioButton_toggled(bool checked)
 {
+	if (checked == false)
+		return;
     userWindow->ShowAll();
     userWindow->SetShowing(m);
     userWindow->HideWomen();
@@ -178,6 +244,8 @@ void MainWindow::on_MenRadioButton_toggled(bool checked)
 
 void MainWindow::on_WomenRadioButton_toggled(bool checked)
 {
+	if (checked == false)
+		return;
     userWindow->ShowAll();
     userWindow->SetShowing(w);
     userWindow->HideMen();
@@ -185,6 +253,18 @@ void MainWindow::on_WomenRadioButton_toggled(bool checked)
 
 void MainWindow::on_AllRadioButton_toggled(bool checked)
 {
+	if (checked == false)
+		return;
     userWindow->ShowAll();
     userWindow->SetShowing(a);
+}
+
+void MainWindow::on_actionCalibrate_triggered()
+{
+	// To be implemented.
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+	QApplication::closeAllWindows();
 }
