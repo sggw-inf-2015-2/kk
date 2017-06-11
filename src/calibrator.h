@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include <complex>
-
+#include "recorder.h"
 using namespace std;
 
 class Calibrator : public QObject
@@ -12,7 +12,9 @@ class Calibrator : public QObject
     Q_OBJECT
 public:
     explicit Calibrator(QObject *parent = nullptr);
+    Calibrator(Recorder *Record);
     static void Calibrate();
+    static Recorder *recorder;
 signals:
 
 public slots:

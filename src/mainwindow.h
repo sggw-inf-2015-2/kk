@@ -36,7 +36,7 @@ private:
     Ui::MainWindow *ui;
     UserWindow *userWindow;
     bool recordOnRun;
-    static Recorder recorder;
+    Recorder recorder;
     AddUserWindow *auw;
     void initialiseDeviceList();
 
