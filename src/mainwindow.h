@@ -7,6 +7,7 @@
 #include "user.h"
 #include "adduserwindow.h"
 #include "userwindow.h"
+#include "calibrator.h"
 
 namespace Ui {
 class MainWindow;
@@ -18,13 +19,13 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(UserWindow *uw, QWidget *parent = 0);
-    static Recorder* GetRecorder();
     ~MainWindow();
 	void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void proceed();
 	void onRecordingStopped(const QVector<std::complex<double> > &complexData);
+	void onCalibrationStopped();
     void on_AddUserButton_clicked();
     void on_EditUserButton_clicked();
     void on_MenRadioButton_toggled(bool checked);
@@ -42,6 +43,7 @@ private:
     Recorder recorder;
     AddUserWindow *auw;
 	int currentUser;
+	Calibrator *calibrator;
 
     void initialiseDeviceList();
     void insertUserToList(User * const user);

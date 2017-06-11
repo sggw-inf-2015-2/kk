@@ -1,22 +1,20 @@
 #include "calibrator.h"
-#include "recorder.h"
 #include "audiomodel.h"
-#include "mainwindow.h"
-Calibrator::Calibrator(QObject *parent) : QObject(parent)
-{
 
-}
-Calibrator::Calibrator(Recorder *record)
+Calibrator::Calibrator(Recorder *recorder, QObject *parent) : QObject(parent)
 {
-    Calibrator::recorder = record;
+	this->recorder = recorder;
 }
+
 void Calibrator::Calibrate()
 {
-    Recorder *Calibration = recorder;
-    Calibration->Start();
+	connect(recorder, SIGNAL(recordingStopped(const QVector<std::complex<double> > &)), this, SLOT(OnRecordingStopped(const QVector<std::complex<double> > &)));
+	recorder->Start();
 }
 
-void OnRecordingStopped( QVector<complex<double>> x )
+void Calibrator::OnRecordingStopped(const QVector<std::complex<double> > &x)
 {
-    AudioModel::CalibrationData = AudioModel::ComputeLevel(x);
+	disconnect(recorder, 0, this, 0);
+	AudioModel::CalibrationData = AudioModel::computeLevel(x);
+	emit calibrationStopped();
 }

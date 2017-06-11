@@ -3,22 +3,20 @@
 
 #include <QObject>
 #include <QVector>
-#include <complex>
 #include "recorder.h"
-using namespace std;
 
 class Calibrator : public QObject
 {
     Q_OBJECT
+	Recorder *recorder;
 public:
-    explicit Calibrator(QObject *parent = nullptr);
-    Calibrator(Recorder *Record);
-    static void Calibrate();
-    static Recorder *recorder;
+	explicit Calibrator(Recorder *recorder, QObject *parent = nullptr);
+	void Calibrate();
 signals:
+	void calibrationStopped();
 
 public slots:
-    void OnRecordingStopped( QVector<complex<double>> x );
+	void OnRecordingStopped(const QVector<std::complex<double> > &x);
 };
 
 #endif // CALIBRATOR_H

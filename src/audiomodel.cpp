@@ -1,9 +1,9 @@
+#define _USE_MATH_DEFINES // for Visual Studio C++ compiler compability
 #include <functional>
-
 #include "audiomodel.h"
 
 const complex<double> AudioModel::ZERO = complex<double>(0, 0);
-static double AudioModel::CalibrationData;
+double AudioModel::CalibrationData = 0.0;
 AudioModel::AudioModel(QObject *parent) : QObject(parent)
 {
 

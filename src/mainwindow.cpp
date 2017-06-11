@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QFileDialog>
-
+#include "audiomodel.h"
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
@@ -12,10 +12,12 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
 	setFixedSize(size());
     userWindow = uw;
     recordOnRun = false;
+	calibrator = new Calibrator(&recorder, this);
     initialiseDeviceList();
 
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
 	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
+	connect(calibrator, SIGNAL(calibrationStopped()), this, SLOT(onCalibrationStopped()));
 
     ui->AdminUserList->setColumnCount(5);
     QStringList Header;
@@ -28,6 +30,7 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete ui;
+	delete calibrator;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -95,15 +98,21 @@ void MainWindow::proceed()
 
 void MainWindow::onRecordingStopped(const QVector<std::complex<double> > &complexData)
 {
-	// Call computeLevel() here...
+	double result = AudioModel::computeLevel(complexData, AudioModel::CalibrationData);
 
-	// User::setShoutScore(currentUser, ...);
-	// userWindow->InsertUserToRanking(User::GetUser(currentUser), currentUser);
-	// ui->AdminUserList->setItem(currentUser,3,new QTableWidgetItem(QString::number(...))); // Update shout score in adminWindow's table.
+	User::setShoutScore(currentUser, result);
+	userWindow->InsertUserToRanking(User::GetUser(currentUser), currentUser);
+	ui->AdminUserList->setItem(currentUser,3,new QTableWidgetItem(QString::number(result))); // Update shout score in adminWindow's table.
 	ui->recordButton->setText(tr("Nagrywaj"));
 	ui->deviceComboBox->setEnabled(true);
 	recordOnRun = false;
 	disconnect(&recorder, 0, this, 0); // Prevent mainWindow from receiving signals from recorder.
+}
+
+void MainWindow::onCalibrationStopped()
+{
+	ui->deviceComboBox->setEnabled(true);
+	ui->recordButton->setEnabled(true);
 }
 
 void MainWindow::initialiseDeviceList()
@@ -261,7 +270,17 @@ void MainWindow::on_AllRadioButton_toggled(bool checked)
 
 void MainWindow::on_actionCalibrate_triggered()
 {
-	// To be implemented.
+	QMessageBox::StandardButton reply;
+	reply = QMessageBox::question(this, tr("Kalibruj"), tr("Upewnij się, że z obecnie wybranego urządzenia do nagrywania można odebrać sygnał kalibracyjny i kontynuuj."),
+								   QMessageBox::Ok|QMessageBox::Cancel);
+	if (reply == QMessageBox::Cancel)
+	{
+	   return;
+	}
+
+	calibrator->Calibrate();
+	ui->deviceComboBox->setEnabled(false);
+	ui->recordButton->setEnabled(false);
 }
 
 void MainWindow::on_actionClose_triggered()
