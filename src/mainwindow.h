@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(UserWindow *uw, QWidget *parent = 0);
+    static Recorder* GetRecorder();
     ~MainWindow();
 
 private slots:

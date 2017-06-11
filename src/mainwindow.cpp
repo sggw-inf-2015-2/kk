@@ -99,7 +99,10 @@ void MainWindow::initialiseDeviceList()
     }
 }
 
-
+ static Recorder GetRecorder()
+ {
+    Recorder *Calibration =& MainWindow::recorder;
+ }
 
 void MainWindow::on_AddUserButton_clicked()
 {

@@ -12,10 +12,11 @@ class Calibrator : public QObject
     Q_OBJECT
 public:
     explicit Calibrator(QObject *parent = nullptr);
-    void Calibrate(QVector<complex<double>> x);
+    void Calibrate();
 signals:
 
 public slots:
+    void OnRecordingStopped( QVector<complex<double>> x );
 };
 
 #endif // CALIBRATOR_H
