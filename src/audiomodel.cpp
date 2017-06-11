@@ -1,5 +1,8 @@
-#define _USE_MATH_DEFINES // for Visual Studio C++ compiler compability
+#define _USE_MATH_DEFINES
+
 #include <functional>
+#include <fftw3.h>
+
 #include "audiomodel.h"
 
 const complex<double> AudioModel::ZERO = complex<double>(0, 0);
@@ -19,36 +22,27 @@ QVector<complex<double>> AudioModel::fft(QVector<complex<double> > x)
 {
     int N = x.length();
 
-    // base case
-    if (N == 1) return QVector<complex<double>> { x[0] };
+    fftw_complex *in, *out;
+    fftw_plan p;
+    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+    p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
 
-    // radix 2 Cooley-Tukey FFT
-    if (N % 2 != 0) {
-        throw invalid_argument("N is not a power of 2");
+    for (int i = 0; i < N; i++) {
+        in[i][0] = x[i].real();
+        in[i][1] = x[i].imag();
     }
 
-    // fft of even terms
-    QVector<complex<double>> even = QVector<complex<double>>(N/2);
-    for (int k = 0; k < N/2; k++) {
-        even[k] = x[2*k];
-    }
-    QVector<complex<double>> q = fft(even);
+    fftw_execute(p);
 
-    // fft of odd terms
-    QVector<complex<double>> odd  = even;  // reuse the array
-    for (int k = 0; k < N/2; k++) {
-        odd[k] = x[2*k + 1];
+    auto y = QVector<complex<double>>(N);
+    for (int i = 0; i < N; i++) {
+        y[i] = complex<double>(out[i][0], out[i][1]);
     }
-    QVector<complex<double>> r = fft(odd);
 
-    // combine
-    QVector<complex<double>> y = QVector<complex<double>>(N);
-    for (int k = 0; k < N/2; k++) {
-        double kth = -2 * k * M_PI / N;
-        complex<double> wk = complex<double>(cos(kth), sin(kth));
-        y[k]       = q[k]+(wk * r[k]);
-        y[k + N/2] = q[k]-(wk * r[k]);
-    }
+    fftw_destroy_plan(p);
+    fftw_free(in);
+    fftw_free(out);
     return y;
 }
 

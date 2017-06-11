@@ -10,6 +10,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = kk
 TEMPLATE = app
+CONFIG += link_pkgconfig
+PKGCONFIG += fftw3
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += src/main.cpp \
@@ -19,7 +21,7 @@ SOURCES += src/main.cpp \
     src/user.cpp \
     src/userwindow.cpp \
     src/adduserwindow.cpp \
-	src/calibrator.cpp \
+	  src/calibrator.cpp \
     src/audiomodel.cpp
 
 HEADERS  += \
