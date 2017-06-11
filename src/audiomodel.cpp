@@ -1,3 +1,5 @@
+#include <functional>
+
 #include "audiomodel.h"
 
 const complex<double> AudioModel::ZERO = complex<double>(0, 0);
@@ -145,14 +147,17 @@ QVector<complex<double>> AudioModel::cconvolve(QVector<std::complex<double> > x,
  *
  *  @return The power of signal calculation by Parseval's theorem.
  */
-double AudioModel::computeLevel(QVector<std::complex<double>> x, int original_length)
+double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrationOffset)
 {
+    int original_length = x.length();
+    auto xfft = fft(x);
+    transform(xfft.begin(), xfft.end(), xfft.begin(), [=](complex<double> z){ return z + calibrationOffset; });
+
     double result = 0;
-    int i;
     double fraction;
-    for(i=0; i<x.length(); i++)
-       result += abs(x[i]) * abs(x[i]);
-    fraction = (double)x.length()/(double)original_length;
+    for(auto z: xfft)
+       result += abs(z) * abs(z);
+    fraction = (double)xfft.length() / (double)original_length;
     result = result*fraction;
     return result;
 }

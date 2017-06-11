@@ -12,19 +12,17 @@ class AudioModel : public QObject
     Q_OBJECT
 
     static const complex<double> ZERO;
-public:
+
+    static QVector<complex<double>> convolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
+    static QVector<complex<double>> cconvolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
+
+    static QVector<complex<double>> fft(QVector<complex<double>> x);
+    static QVector<complex<double>> ifft(QVector<complex<double>> x);
+
     explicit AudioModel(QObject *parent = 0);
 
-    QVector<complex<double>> convolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
-    QVector<complex<double>> cconvolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
-
-    QVector<complex<double>> fft(QVector<complex<double>> x);
-    QVector<complex<double>> ifft(QVector<complex<double>> x);
-
-    double computeLevel(QVector<complex<double>> x, int original_length);
-signals:
-
 public slots:
+    static double computeLevel(QVector<std::complex<double>> x, double calibrationOffset = 0);
 };
 
 #endif // AUDIOMODEL_H
