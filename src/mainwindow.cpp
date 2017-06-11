@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QFileDialog>
-#include <cstdlib>
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
@@ -15,7 +14,6 @@ MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     initialiseDeviceList();
 
     connect(ui->recordButton, SIGNAL(pressed()), this, SLOT(proceed()));
-	connect(&recorder, SIGNAL(recordingStopped(qint64)), this, SLOT(onRecordingStopped(qint64)));
 	connect(ui->deviceComboBox, SIGNAL(currentTextChanged(QString)), &recorder, SLOT(InitialiseRecorder(QString)));
 
     ui->AdminUserList->setColumnCount(5);
@@ -63,22 +61,19 @@ void MainWindow::proceed()
                 {
                     ui->AdminUserList->item(rowindex,4)->setCheckState(Qt::Checked);
                 }
-                double x = (double)(rand() % 121); // Just for test purpose. To be deleted when audio model would be done.
-                User::setShoutScore(rowindex,x);
-                userWindow->InsertUserToRanking(User::GetUser(rowindex),rowindex);
-                ui->AdminUserList->setItem(rowindex,3,new QTableWidgetItem(QString::number(x))); // Update shout score in adminWindow's table.
-                /*if (!recordOnRun)
+				if (!recordOnRun)
                 {
+					connect(&recorder, SIGNAL(recordingStopped(const QList<std::complex<double> > &)), this, SLOT(onRecordingStopped(const QList<std::complex<double> > &)));
+					currentUser = rowindex; // onRecordingStopped() slot must know, to which user it should assigns shout level.
                     recorder.Start();
                     recordOnRun = true;
                     ui->recordButton->setText(tr("Zatrzymaj"));
-                    ui->bytes->clear();
                     ui->deviceComboBox->setEnabled(false);
                 }
                 else
                 {
                     recorder.Stop();
-                }*/
+				}
             }
             else
             {
@@ -97,11 +92,17 @@ void MainWindow::proceed()
 	}
 }
 
-void MainWindow::onRecordingStopped(qint64 size)
+void MainWindow::onRecordingStopped(const QList<std::complex<double> > &complexData)
 {
-	qDebug() << "Rozmiar bufora:" << size;
+	// Call computeLevel() here...
+
+	// User::setShoutScore(currentUser, ...);
+	// userWindow->InsertUserToRanking(User::GetUser(currentUser), currentUser);
+	// ui->AdminUserList->setItem(currentUser,3,new QTableWidgetItem(QString::number(...))); // Update shout score in adminWindow's table.
 	ui->recordButton->setText(tr("Nagrywaj"));
+	ui->deviceComboBox->setEnabled(true);
 	recordOnRun = false;
+	disconnect(&recorder, 0, this, 0); // Prevent mainWindow from receiving signals from recorder.
 }
 
 void MainWindow::initialiseDeviceList()
@@ -133,9 +134,8 @@ void MainWindow::insertUserToList(User * const user)
     // Do not worry about 'new' operator, QTableWidget can handle this.
     checkBoxCell->data(Qt::CheckStateRole);
     checkBoxCell->setCheckState(Qt::Unchecked);
-    ui->AdminUserList->setItem(row, 4, checkBoxCell);
+	ui->AdminUserList->setItem(row, 4, checkBoxCell);
 }
-
 
 void MainWindow::on_AddUserButton_clicked()
 {

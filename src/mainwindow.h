@@ -23,7 +23,7 @@ public:
 
 private slots:
     void proceed();
-	void onRecordingStopped(qint64 bytes);
+	void onRecordingStopped(const QList<std::complex<double> > &complexData);
     void on_AddUserButton_clicked();
     void on_EditUserButton_clicked();
     void on_MenRadioButton_toggled(bool checked);
@@ -40,6 +40,7 @@ private:
     bool recordOnRun;
     Recorder recorder;
     AddUserWindow *auw;
+	int currentUser;
 
     void initialiseDeviceList();
     void insertUserToList(User * const user);

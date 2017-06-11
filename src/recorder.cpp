@@ -1,7 +1,7 @@
 #include "recorder.h"
 #include <QDir>
 #include <QAudioFormat>
-#include <QDebug>
+#include <QDataStream>
 
 using std::logic_error;
 
@@ -78,6 +78,7 @@ void Recorder::Start()
 //		throw;
 //		return;
 //	}
+	buffer.buffer().clear(); // Flush data from underlying QByteArray internal buffer.
     buffer.open(QIODevice::ReadWrite);
     audio->start(&buffer);
 
@@ -115,10 +116,9 @@ void Recorder::Stop()
 	timer.stop(); // Stop a timer in case user aborts recording.
 	audio->stop();
     buffer.close();
-    // TODO: get data from buffer and analyze it.
 
-    emit recordingStopped(buffer.data().size());
-    buffer.buffer().clear(); // Flush data from underlying QByteArray internal buffer.
+	parseBufferContent(buffer.data());
+	emit recordingStopped(complexData);
 }
 
 void Recorder::closeFile()
@@ -145,4 +145,16 @@ QStringList Recorder::GetAvailableDevices() const
 		devicesNames.append(device.deviceName());
     }
 	return devicesNames;
+}
+
+void Recorder::parseBufferContent(const QByteArray &data)
+{
+	complexData.clear();
+	QDataStream stream(data);
+	while (!stream.atEnd())
+	{
+		int i;
+		stream >> i;
+		complexData.append(std::complex<double>((double)i, 0.0));
+	}
 }
