@@ -23,7 +23,7 @@ public:
 
 private slots:
     void proceed();
-	void onRecordingStopped(const QList<std::complex<double> > &complexData);
+	void onRecordingStopped(const QVector<std::complex<double> > &complexData);
     void on_AddUserButton_clicked();
     void on_EditUserButton_clicked();
     void on_MenRadioButton_toggled(bool checked);

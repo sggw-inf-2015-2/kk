@@ -155,6 +155,6 @@ void Recorder::parseBufferContent(const QByteArray &data)
 	{
 		int i;
 		stream >> i;
-		complexData.append(std::complex<double>((double)i, 0.0));
+		complexData.push_back(std::complex<double>((double)i, 0.0));
 	}
 }

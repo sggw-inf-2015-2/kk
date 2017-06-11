@@ -22,7 +22,7 @@ class Recorder : public QObject
     //
     QBuffer buffer;
     QTimer timer;
-	QList<std::complex<double> > complexData;
+	QVector<std::complex<double> > complexData;
 
 	void setupTimer();
 	void setFormatSettings();
@@ -39,7 +39,7 @@ public slots:
 	void Stop();
 	void InitialiseRecorder(const QString &deviceName = "");
 signals:
-	void recordingStopped(const QList<std::complex<double> > &complexData);
+	void recordingStopped(const QVector<std::complex<double> > &complexData);
 };
 
 #endif // RECORDER_H

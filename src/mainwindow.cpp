@@ -63,7 +63,7 @@ void MainWindow::proceed()
                 }
 				if (!recordOnRun)
                 {
-					connect(&recorder, SIGNAL(recordingStopped(const QList<std::complex<double> > &)), this, SLOT(onRecordingStopped(const QList<std::complex<double> > &)));
+					connect(&recorder, SIGNAL(recordingStopped(const QVector<std::complex<double> > &)), this, SLOT(onRecordingStopped(const QVector<std::complex<double> > &)));
 					currentUser = rowindex; // onRecordingStopped() slot must know, to which user it should assigns shout level.
                     recorder.Start();
                     recordOnRun = true;
@@ -92,7 +92,7 @@ void MainWindow::proceed()
 	}
 }
 
-void MainWindow::onRecordingStopped(const QList<std::complex<double> > &complexData)
+void MainWindow::onRecordingStopped(const QVector<std::complex<double> > &complexData)
 {
 	// Call computeLevel() here...
 
