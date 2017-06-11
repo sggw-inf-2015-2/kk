@@ -20,6 +20,8 @@ public:
 
     QVector<complex<double>> fft(QVector<complex<double>> x);
     QVector<complex<double>> ifft(QVector<complex<double>> x);
+
+    double computeLevel(QVector<complex<double>> x, int original_length);
 signals:
 
 public slots:
