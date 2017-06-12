@@ -12,6 +12,8 @@ class Calibrator : public QObject
 public:
 	explicit Calibrator(Recorder *recorder, QObject *parent = nullptr);
 	void Calibrate();
+
+    static double calibrationData;
 signals:
 	void calibrationStopped();
 

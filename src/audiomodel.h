@@ -21,6 +21,9 @@ class AudioModel : public QObject
 
     explicit AudioModel(QObject *parent = 0);
 
+public:
+    static double power(QVector<std::complex<double>> x, double calibrationOffset = 0.0);
+
 public slots:
     static double computeLevel(QVector<std::complex<double>> x, double calibrationOffset = 0.0, double referencePower = 1.0);
 };

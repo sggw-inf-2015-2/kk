@@ -7,7 +7,6 @@
 #include "audiomodel.h"
 
 const complex<double> AudioModel::ZERO = complex<double>(0, 0);
-double AudioModel::CalibrationData = 0.0;
 AudioModel::AudioModel(QObject *parent) : QObject(parent)
 {
 
@@ -134,15 +133,7 @@ QVector<complex<double>> AudioModel::cconvolve(QVector<std::complex<double> > x,
     return ifft(c);
 }
 
-/**
- *  This method calculates the signal power from the FFT.
- *
- *  @param x The FFT of the original signal,
- *  @param original_length The original length of the input data table.
- *
- *  @return The power of signal calculation by Parseval's theorem.
- */
-double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrationOffset, double referencePower)
+double AudioModel::power(QVector<std::complex<double>> x, double calibrationOffset)
 {
     int original_length = x.length();
     auto xfft = fft(x);
@@ -155,5 +146,23 @@ double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrat
     fraction = (double)xfft.length() / (double)original_length;
     result = result*fraction;
 
-    return log10(result / referencePower);
+    return result;
+}
+
+/**
+ *  This method calculates the signal volume from the FFT.
+ *
+ *  @param x The original signal,
+ *  @param calibrationOffset
+ *  @param referencePower
+ *
+ *  @return The volume of signal calculation by Parseval's theorem.
+ */
+double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrationOffset, double referencePower)
+{
+    double p = power(x, calibrationOffset);
+    double f = 48000.0;
+    double R_A = 12194*12194*pow(f, 4.0) / ((f*f + 20.6*20.6) * sqrt((f*f + 107.7*107.7)*(f*f + 737.9*737.9)) * (f*f + 12194*12194));
+    double A = 20*log10(R_A) + 2.0;
+    return log10(p / referencePower) + A;
 }

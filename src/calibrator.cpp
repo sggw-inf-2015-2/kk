@@ -1,6 +1,8 @@
 #include "calibrator.h"
 #include "audiomodel.h"
 
+double Calibrator::calibrationData = 0.0;
+
 Calibrator::Calibrator(Recorder *recorder, QObject *parent) : QObject(parent)
 {
 	this->recorder = recorder;
@@ -15,6 +17,6 @@ void Calibrator::Calibrate()
 void Calibrator::OnRecordingStopped(const QVector<std::complex<double> > &x)
 {
 	disconnect(recorder, 0, this, 0);
-	AudioModel::CalibrationData = AudioModel::computeLevel(x);
+    calibrationData = AudioModel::computeLevel(x);
 	emit calibrationStopped();
 }
