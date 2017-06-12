@@ -98,7 +98,7 @@ void MainWindow::proceed()
 
 void MainWindow::onRecordingStopped(const QVector<std::complex<double> > &complexData)
 {
-	double result = AudioModel::computeLevel(complexData, AudioModel::CalibrationData);
+    double result = AudioModel::computeLevel(complexData, Calibrator::calibrationData);
 
 	User::setShoutScore(currentUser, result);
 	userWindow->InsertUserToRanking(User::GetUser(currentUser), currentUser);
