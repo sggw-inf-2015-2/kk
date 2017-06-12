@@ -7,7 +7,7 @@
 #include "audiomodel.h"
 
 const complex<double> AudioModel::ZERO = complex<double>(0, 0);
-
+double AudioModel::CalibrationData = 0.0;
 AudioModel::AudioModel(QObject *parent) : QObject(parent)
 {
 
