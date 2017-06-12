@@ -1,6 +1,7 @@
 #define _USE_MATH_DEFINES
 
 #include <functional>
+#include <cstdlib>
 #include <fftw3.h>
 
 #include "audiomodel.h"
@@ -114,7 +115,7 @@ QVector<complex<double>> AudioModel::cconvolve(QVector<std::complex<double> > x,
     // TODO: should probably pad x and y with 0s so that they have same length
     // and are powers of 2
     if (x.length() != y.length()) {
-       // throw new IllegalArgumentException("Dimensions don't agree");
+       throw new invalid_argument("Dimensions don't agree.");
     }
 
     int N = x.length();
@@ -141,7 +142,7 @@ QVector<complex<double>> AudioModel::cconvolve(QVector<std::complex<double> > x,
  *
  *  @return The power of signal calculation by Parseval's theorem.
  */
-double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrationOffset)
+double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrationOffset, double referencePower)
 {
     int original_length = x.length();
     auto xfft = fft(x);
@@ -153,5 +154,6 @@ double AudioModel::computeLevel(QVector<std::complex<double>> x, double calibrat
        result += abs(z) * abs(z);
     fraction = (double)xfft.length() / (double)original_length;
     result = result*fraction;
-    return result;
+
+    return log10(result / referencePower);
 }
