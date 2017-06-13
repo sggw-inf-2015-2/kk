@@ -30,6 +30,7 @@ class Recorder : public QObject
 	void closeFile();
     void printFormat() const;
 	void parseBufferContent(const QByteArray &data);
+    void loadAudioDataFromFile(const QString &fileName);
 public:
 	Recorder();
     ~Recorder();

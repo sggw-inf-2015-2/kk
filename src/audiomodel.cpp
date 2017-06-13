@@ -138,6 +138,7 @@ double AudioModel::power(QVector<std::complex<double>> x, double calibrationOffs
     int original_length = x.length();
     auto xfft = fft(x);
     transform(xfft.begin(), xfft.end(), xfft.begin(), [=](complex<double> z){ return z + calibrationOffset; });
+    //transform(xfft.begin(), xfft.end(), xfft.begin(), [=](complex<double> z){ return 20*log10(z.real()) + calibrationOffset; });
 
     double result = 0;
     double fraction;

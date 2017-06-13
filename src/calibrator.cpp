@@ -18,5 +18,8 @@ void Calibrator::OnRecordingStopped(const QVector<std::complex<double> > &x)
 {
 	disconnect(recorder, 0, this, 0);
     calibrationData = AudioModel::computeLevel(x);
+    qDebug() << calibrationData;
+    calibrationData = 94.0 - calibrationData;
+    qDebug() << "Po odjęciu od 94: " << calibrationData;
 	emit calibrationStopped();
 }
