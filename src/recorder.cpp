@@ -63,7 +63,7 @@ void Recorder::setFormatSettings()
 	format.setSampleRate(48000);
 	format.setCodec("audio/pcm");
 	format.setSampleSize(16);
-    format.setByteOrder(QAudioFormat::LittleEndian);
+	format.setByteOrder(QAudioFormat::LittleEndian);
 	format.setSampleType(QAudioFormat::SignedInt);
 }
 
@@ -116,9 +116,9 @@ void Recorder::Stop()
 {
     timer.stop(); // Stop a timer in case user aborts recording.
     audio->stop();
-    buffer.close();
+	buffer.close();
 
-    parseBufferContent(buffer.data());
+	parseBufferContent(buffer.data());
 	emit recordingStopped(complexData);
 }
 
@@ -152,12 +152,14 @@ void Recorder::parseBufferContent(const QByteArray &data)
 {
 	complexData.clear();
 	QDataStream stream(data);
+	stream.setByteOrder(QDataStream::LittleEndian);
 	while (!stream.atEnd())
 	{
-        short i;
+		short i;
 		stream >> i;
-		complexData.push_back(std::complex<double>((double)i, 0.0));
-    }
+		double j = i / (double) std::numeric_limits<short>::max(); // Scale to [-1,1] range.
+		complexData.push_back(std::complex<double>(j, 0.0));
+	}
 }
 
 void Recorder::LoadAudioDataFromFile(const QString &fileName)
@@ -166,12 +168,13 @@ void Recorder::LoadAudioDataFromFile(const QString &fileName)
     QFile file(fileName);
     file.open(QFile::ReadOnly);
     QDataStream fstream(&file);
+	fstream.setByteOrder(QDataStream::LittleEndian);
     while (!fstream.atEnd())
     {
         short i;
-        fstream >> i;
-        i /= std::numeric_limits<short>::max(); // Scale to [-1,1] range.
-        complexData.push_back(std::complex<double>((double)i, 0.0));
+		fstream >> i;
+		double j = (double) i / (double) std::numeric_limits<short>::max(); // Scale to [-1,1] range.
+		complexData.push_back(std::complex<double>(j, 0.0));
     }
     file.close();
     emit recordingStopped(complexData);
