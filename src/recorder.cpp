@@ -2,6 +2,7 @@
 #include <QDir>
 #include <QAudioFormat>
 #include <QDataStream>
+#include <limits>
 
 using std::logic_error;
 
@@ -78,13 +79,12 @@ void Recorder::Start()
 //		throw;
 //		return;
 //	}
-    //buffer.buffer().clear(); // Flush data from underlying QByteArray internal buffer.
-    //buffer.open(QIODevice::ReadWrite);
-    //audio->start(&buffer);
+    buffer.buffer().clear(); // Flush data from underlying QByteArray internal buffer.
+    buffer.open(QIODevice::ReadWrite);
+    audio->start(&buffer);
 
 	// Record 5 seconds.
-    //timer.start();
-    Stop();
+    timer.start();
 }
 
 void Recorder::openFile(const QString &fileName)
@@ -114,12 +114,11 @@ void Recorder::openFile(const QString &fileName)
 
 void Recorder::Stop()
 {
-    //timer.stop(); // Stop a timer in case user aborts recording.
-    //audio->stop();
-    //buffer.close();
+    timer.stop(); // Stop a timer in case user aborts recording.
+    audio->stop();
+    buffer.close();
 
-    // parseBufferContent(buffer.data());
-    loadAudioDataFromFile("kalibracja.wav");
+    parseBufferContent(buffer.data());
 	emit recordingStopped(complexData);
 }
 
@@ -161,8 +160,9 @@ void Recorder::parseBufferContent(const QByteArray &data)
     }
 }
 
-void Recorder::loadAudioDataFromFile(const QString &fileName)
+void Recorder::LoadAudioDataFromFile(const QString &fileName)
 {
+    complexData.clear();
     QFile file(fileName);
     file.open(QFile::ReadOnly);
     QDataStream fstream(&file);
@@ -170,7 +170,9 @@ void Recorder::loadAudioDataFromFile(const QString &fileName)
     {
         short i;
         fstream >> i;
+        i /= std::numeric_limits<short>::max(); // Scale to [-1,1] range.
         complexData.push_back(std::complex<double>((double)i, 0.0));
     }
     file.close();
+    emit recordingStopped(complexData);
 }

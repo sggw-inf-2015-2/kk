@@ -11,12 +11,18 @@ Calibrator::Calibrator(Recorder *recorder, QObject *parent) : QObject(parent)
 void Calibrator::Calibrate()
 {
 	connect(recorder, SIGNAL(recordingStopped(const QVector<std::complex<double> > &)), this, SLOT(OnRecordingStopped(const QVector<std::complex<double> > &)));
-	recorder->Start();
+    recorder->Start();
+}
+
+void Calibrator::CalibrateFromFile(const QString &fileName)
+{
+    connect(recorder, SIGNAL(recordingStopped(const QVector<std::complex<double> > &)), this, SLOT(OnRecordingStopped(const QVector<std::complex<double> > &)));
+    recorder->LoadAudioDataFromFile(fileName);
 }
 
 void Calibrator::OnRecordingStopped(const QVector<std::complex<double> > &x)
 {
-	disconnect(recorder, 0, this, 0);
+    disconnect(recorder, 0, this, 0);
     calibrationData = AudioModel::computeLevel(x);
     qDebug() << calibrationData;
     calibrationData = 94.0 - calibrationData;

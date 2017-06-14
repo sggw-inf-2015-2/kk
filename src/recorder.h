@@ -30,12 +30,12 @@ class Recorder : public QObject
 	void closeFile();
     void printFormat() const;
 	void parseBufferContent(const QByteArray &data);
-    void loadAudioDataFromFile(const QString &fileName);
 public:
 	Recorder();
     ~Recorder();
     void Start();
 	QStringList GetAvailableDevices() const;
+    void LoadAudioDataFromFile(const QString &fileName);
 public slots:
 	void Stop();
 	void InitialiseRecorder(const QString &deviceName = "");

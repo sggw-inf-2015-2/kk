@@ -12,6 +12,7 @@ class Calibrator : public QObject
 public:
 	explicit Calibrator(Recorder *recorder, QObject *parent = nullptr);
 	void Calibrate();
+    void CalibrateFromFile(const QString &fileName);
 
     static double calibrationData;
 signals:
