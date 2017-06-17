@@ -5,27 +5,19 @@
 #include <QVector>
 #include <complex>
 
-using namespace std;
+using std::complex;
 
 class AudioModel : public QObject
 {
     Q_OBJECT
+	static const int f = 48000;
 
-    static const complex<double> ZERO;
-
-    static QVector<complex<double>> convolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
-    static QVector<complex<double>> cconvolve(QVector<complex<double>> zs, QVector<complex<double>> qs);
-
-    static QVector<complex<double>> fft(QVector<complex<double>> x);
-    static QVector<complex<double>> ifft(QVector<complex<double>> x);
-
-    explicit AudioModel(QObject *parent = 0);
-
-public:
-    static double power(QVector<std::complex<double>> x, double calibrationOffset = 0.0);
+	static QVector<complex<double> > fft(const QVector<complex<double>> &x);
+	static double filterA(double frequency);
+	explicit AudioModel(QObject *parent = 0) : QObject(parent) {}
 
 public slots:
-    static double computeLevel(QVector<std::complex<double>> x, double calibrationOffset = 0.0, double referencePower = 1.0);
+	static double computeLevel(const QVector<std::complex<double> > &x, double calibrationOffset = 0.0);
 };
 
 #endif // AUDIOMODEL_H

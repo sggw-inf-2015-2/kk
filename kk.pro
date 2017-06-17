@@ -10,24 +10,31 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = kk
 TEMPLATE = app
-CONFIG += link_pkgconfig
-PKGCONFIG += fftw3
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 # for MinGW
+
+linux-g++ {
+	CONFIG += link_pkgconfig
+	PKGCONFIG += fftw3
+}
+
+win32 {
+	DESTDIR = $$PWD
+	LIBS += -L$$DESTDIR\lib -llibfftw3-3
+	INCLUDEPATH = $$DESTDIR\lib
+}
 
 SOURCES += src/main.cpp \
     src/recorder.cpp \
     src/mainwindow.cpp \
-    src/wavFile.cpp \
     src/user.cpp \
     src/userwindow.cpp \
     src/adduserwindow.cpp \
-	  src/calibrator.cpp \
+	src/calibrator.cpp \
     src/audiomodel.cpp
 
 HEADERS  += \
     src/recorder.h \
     src/mainwindow.h \
-    src/wavFile.h \
     src/user.h \
     src/userwindow.h \
     src/adduserwindow.h \

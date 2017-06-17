@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "audiomodel.h"
 #include <QMessageBox>
 #include <QFileDialog>
-#include "audiomodel.h"
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
@@ -98,6 +98,7 @@ void MainWindow::proceed()
 
 void MainWindow::onRecordingStopped(const QVector<std::complex<double> > &complexData)
 {
+    qDebug() << Calibrator::calibrationData;
     double result = AudioModel::computeLevel(complexData, Calibrator::calibrationData);
 
 	User::setShoutScore(currentUser, result);
@@ -286,4 +287,22 @@ void MainWindow::on_actionCalibrate_triggered()
 void MainWindow::on_actionClose_triggered()
 {
 	QApplication::closeAllWindows();
+}
+
+void MainWindow::on_actionCalibrateFromFile_triggered()
+{
+	QFileDialog fdialog(this);
+	QString filename;
+	fdialog.setFileMode(QFileDialog::ExistingFile);
+	QStringList filters;
+	filters << tr("Plik WAV (*.wav)")
+			<< tr("Wszystkie pliki (*)");
+	fdialog.setNameFilters(filters);
+	if (fdialog.exec())
+	{
+		filename = fdialog.selectedFiles().front();
+	}
+	else
+		return;
+	calibrator->CalibrateFromFile(filename);
 }
