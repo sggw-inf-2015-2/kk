@@ -35,7 +35,6 @@ private slots:
 	void on_actionImportFromCsv_triggered();
 	void on_actionCalibrate_triggered();
 	void on_actionClose_triggered();
-
     void on_actionCalibrateFromFile_triggered();
 
 private:

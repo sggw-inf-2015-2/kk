@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "audiomodel.h"
 #include <QMessageBox>
 #include <QFileDialog>
-#include "audiomodel.h"
 
 MainWindow::MainWindow(UserWindow *uw, QWidget *parent) :
     QMainWindow(parent),
@@ -291,5 +291,18 @@ void MainWindow::on_actionClose_triggered()
 
 void MainWindow::on_actionCalibrateFromFile_triggered()
 {
-    calibrator->CalibrateFromFile("kalibracja.wav");
+	QFileDialog fdialog(this);
+	QString filename;
+	fdialog.setFileMode(QFileDialog::ExistingFile);
+	QStringList filters;
+	filters << tr("Plik WAV (*.wav)")
+			<< tr("Wszystkie pliki (*)");
+	fdialog.setNameFilters(filters);
+	if (fdialog.exec())
+	{
+		filename = fdialog.selectedFiles().front();
+	}
+	else
+		return;
+	calibrator->CalibrateFromFile(filename);
 }

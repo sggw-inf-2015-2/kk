@@ -17,8 +17,8 @@ linux-g++ {
 	PKGCONFIG += fftw3
 }
 
-DESTDIR = $$PWD
 win32 {
+	DESTDIR = $$PWD
 	LIBS += -L$$DESTDIR\lib -llibfftw3-3
 	INCLUDEPATH = $$DESTDIR\lib
 }
@@ -26,7 +26,6 @@ win32 {
 SOURCES += src/main.cpp \
     src/recorder.cpp \
     src/mainwindow.cpp \
-    src/wavFile.cpp \
     src/user.cpp \
     src/userwindow.cpp \
     src/adduserwindow.cpp \
@@ -36,7 +35,6 @@ SOURCES += src/main.cpp \
 HEADERS  += \
     src/recorder.h \
     src/mainwindow.h \
-    src/wavFile.h \
     src/user.h \
     src/userwindow.h \
     src/adduserwindow.h \

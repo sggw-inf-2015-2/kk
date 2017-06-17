@@ -1,7 +1,6 @@
 #include "recorder.h"
 #include <QDir>
 #include <QAudioFormat>
-#include <QDataStream>
 #include <limits>
 
 using std::logic_error;
@@ -69,47 +68,12 @@ void Recorder::setFormatSettings()
 
 void Recorder::Start()
 {
-    // to be deleted in final release:
-//	try
-//	{
-//		openFile("audiodata.wav");
-//	}
-//	catch (exception &)
-//	{
-//		throw;
-//		return;
-//	}
     buffer.buffer().clear(); // Flush data from underlying QByteArray internal buffer.
     buffer.open(QIODevice::ReadWrite);
     audio->start(&buffer);
 
 	// Record 5 seconds.
     timer.start();
-}
-
-void Recorder::openFile(const QString &fileName)
-{
-	// Check whether some directory with the same name already exist.
-	QDir testDir(fileName);
-	if (testDir.exists())
-	{
-		QString msg = QString("Nie udało się utworzyć pliku. Istnieje już katalog o tej samej nazwie (%1).").arg(fileName);
-		throw logic_error(msg.toStdString());
-		return;
-	}
-
-	QDir dir;
-	QString path = dir.absoluteFilePath(fileName);
-	file.setFileName(path);
-	file.setAudioFormat(format);
-
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
-	{
-		QString msg = "Nie udało się otworzyć pliku. ";
-		msg.append(file.errorString());
-		throw logic_error(msg.toStdString());
-		return;
-	}
 }
 
 void Recorder::Stop()
@@ -120,11 +84,6 @@ void Recorder::Stop()
 
 	parseBufferContent(buffer.data());
 	emit recordingStopped(complexData);
-}
-
-void Recorder::closeFile()
-{
-    file.close();
 }
 
 void Recorder::printFormat() const
@@ -150,32 +109,30 @@ QStringList Recorder::GetAvailableDevices() const
 
 void Recorder::parseBufferContent(const QByteArray &data)
 {
-	complexData.clear();
 	QDataStream stream(data);
+	parse(stream);
+}
+
+void Recorder::LoadAudioDataFromFile(const QString &fileName)
+{
+    QFile file(fileName);
+    file.open(QFile::ReadOnly);
+	file.seek(44); // Skip WAV header.
+    QDataStream fstream(&file);
+	parse(fstream);
+    file.close();
+    emit recordingStopped(complexData);
+}
+
+void Recorder::parse(QDataStream &stream)
+{
+	complexData.clear();
 	stream.setByteOrder(QDataStream::LittleEndian);
 	while (!stream.atEnd())
 	{
 		short i;
 		stream >> i;
-		double j = i / (double) std::numeric_limits<short>::max(); // Scale to [-1,1] range.
-		complexData.push_back(std::complex<double>(j, 0.0));
-	}
-}
-
-void Recorder::LoadAudioDataFromFile(const QString &fileName)
-{
-    complexData.clear();
-    QFile file(fileName);
-    file.open(QFile::ReadOnly);
-    QDataStream fstream(&file);
-	fstream.setByteOrder(QDataStream::LittleEndian);
-    while (!fstream.atEnd())
-    {
-        short i;
-		fstream >> i;
 		double j = (double) i / (double) std::numeric_limits<short>::max(); // Scale to [-1,1] range.
 		complexData.push_back(std::complex<double>(j, 0.0));
-    }
-    file.close();
-    emit recordingStopped(complexData);
+	}
 }
