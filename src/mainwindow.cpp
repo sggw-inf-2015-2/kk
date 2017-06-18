@@ -98,7 +98,6 @@ void MainWindow::proceed()
 
 void MainWindow::onRecordingStopped(const QVector<std::complex<double> > &complexData)
 {
-    qDebug() << Calibrator::calibrationData;
     double result = AudioModel::computeLevel(complexData, Calibrator::calibrationData);
 
 	User::setShoutScore(currentUser, result);
@@ -286,7 +285,7 @@ void MainWindow::on_actionCalibrate_triggered()
 
 void MainWindow::on_actionClose_triggered()
 {
-	QApplication::closeAllWindows();
+	emit close();
 }
 
 void MainWindow::on_actionCalibrateFromFile_triggered()

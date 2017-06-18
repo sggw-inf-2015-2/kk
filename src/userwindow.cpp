@@ -19,7 +19,7 @@ UserWindow::UserWindow(QWidget *parent) :
     ui->UserList->setColumnHidden(3, true); // Hide ID column.
     ui->UserList->setColumnHidden(4, true); // Hide gender column.
     QStringList Header;
-    Header << "Imię" << "Nazwisko" << "Wynik [dB]";
+	Header << "Imię" << "Nazwisko" << "Wynik w dB(A)";
     ui->UserList->setHorizontalHeaderLabels(Header);
     Showing = a;
 }
@@ -50,7 +50,7 @@ void UserWindow::InsertUserToRanking(User *user, int ID)
              item->setData(Qt::DisplayRole, QVariant(user->getShoutScore()));
              ui->UserList->setItem(i,2,item);
              QString genderText = user->getPersonGender() == man ? "M" : "K";
-             ui->UserList->setItem(ui->UserList->rowCount()-1,4,new QTableWidgetItem(genderText));
+			 ui->UserList->setItem(i,4,new QTableWidgetItem(genderText));
              ui->UserList->sortByColumn(2);
 			 if(Showing == w)
 			 {

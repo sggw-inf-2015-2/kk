@@ -3,6 +3,7 @@
 #include "audiomodel.h"
 #include <fftw3.h>
 #include <cmath>
+#include <QDebug>
 
 QVector<complex<double> > AudioModel::fft(const QVector<complex<double> > &x)
 {
@@ -55,8 +56,7 @@ double AudioModel::computeLevel(const QVector<std::complex<double> > &x, double 
 	for (int i = 0; i < samples / 2 + 1; ++i)
 	{
 		double p = std::abs(xdft[i]);
-		if (i != 0 && i != samples / 2)
-			p *= filterA(i);
+		p *= filterA(i * (long long) f / (double) samples);
 		p = std::pow(p, 2) / y;
 		if (i != 0 && i != samples / 2)
 			p *= 2;
