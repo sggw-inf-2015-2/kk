@@ -191,7 +191,7 @@ void MainWindow::on_EditUserButton_clicked()
         ui->AdminUserList->setItem(rowidx,1,new QTableWidgetItem(auw->GetSurName()));
         ui->AdminUserList->setItem(rowidx,2,new QTableWidgetItem(genderText));
 		auto user = User::GetUser(rowidx);
-		userWindow->InsertUserToRanking(user, rowidx);
+        if(User::GetUser(rowidx)->getShoutScore()!=0)userWindow->InsertUserToRanking(user, rowidx);
     }
     delete auw;
 }
